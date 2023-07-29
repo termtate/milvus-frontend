@@ -40,6 +40,32 @@ class UiInterface(ABC):
     def get_advanced_search_field(self) -> str:
         pass
     
+    # @abstractmethod
+    # def show_file_selector(self) -> str:
+    #     pass
+    
+    @abstractmethod
+    def add_log_text(self, text: str):
+        pass
+    
+    # @abstractmethod
+    # def clear_log_text(self):
+    #     pass
+    
+    # @abstractmethod
+    # def toggle_get_path_button(self):
+    #     pass
+    
+    @property
+    @abstractmethod
+    def file_path(self) -> str:
+        pass
+    
+    
+    @abstractmethod
+    def clear_file_path(self):
+        pass
+    
     
 TABLE_COLUMNS = ('ID', "身份证号", '第几次住院', '姓名', '病案号', '性别', '年龄', '电话', '发作演变过程')
 ANN_SEARCH_FIELDS = ("发作演变过程", ) # TODO 
@@ -48,7 +74,7 @@ ANN_SEARCH_FIELDS = ("发作演变过程", ) # TODO
 
 class TestWin(UiInterface):
     def __init__(self):
-        # self.path = ''
+        self.path = ''
         # self.search_state=0
         self.ui = QUiLoader().load('main.ui')
         self.presenter = Presenter(self)
@@ -61,7 +87,7 @@ class TestWin(UiInterface):
         self.ui.list1.currentIndexChanged.connect(self.selectionchange1)
         self.ui.getpathbutton.clicked.connect(lambda: self.getfile(self.ui.getpathbutton))
         self.ui.getpathbutton.clicked.connect(lambda: self.getpath())
-        self.ui.pushButton.clicked.connect(self.storage)
+        self.ui.pushButton.clicked.connect(self.presenter.upload_file_to_database)
         self.ui.table.cellChanged.connect(self.presenter.update_patient_field)
         self.ui.pushButton_2.clicked.connect(self.presenter.delete_all_patients)
         self.ui.setWindowTitle('病历查询')
@@ -96,6 +122,28 @@ class TestWin(UiInterface):
                 
     def get_advanced_search_field(self):
         return self.ui.list2.currentText()
+    
+    def show_file_selector(self) -> str:
+        filepath = QtWidgets.QFileDialog.getExistingDirectory(None, "请选择文件夹路径", "D:/")
+        self.ui.plainTextEdit.appendPlainText(f"选择的路径为：{filepath}")
+        self.ui.getpathbutton.toggle()
+        return filepath
+    
+    def add_log_text(self, text: str):
+        return self.ui.plainTextEdit.appendPlainText(text)
+    
+    def clear_log_text(self):
+        return self.ui.plainTextEdit.clear()
+    
+    def toggle_get_path_button(self):
+        return self.ui.getpathbutton.toggle()
+    
+    @property
+    def file_path(self):
+        return self.path
+    
+    def clear_file_path(self):
+        self.path = ''
 
 
     # def revise(self, row, column):  # 修改数据库
@@ -149,24 +197,24 @@ class TestWin(UiInterface):
         filename, filetype = QFileDialog.getOpenFileName(self.ui, "选取文件", "./data",
                                                          "Excel Files (*.xls *.xlsx)")
         if button.isChecked():
-            self.ui.plainTextEdit.appendPlainText(f"需要读取的路径为:{filename}")
-            self.ui.plainTextEdit.appendPlainText(f"文件格式为:{filetype}")
+            self.add_log_text(f"需要读取的路径为:{filename}")
+            self.add_log_text(f"文件格式为:{filetype}")
         button.toggle()
 
     def getpath(self):      # 读取路径
         self.ui.plainTextEdit.clear()
         filepath = QtWidgets.QFileDialog.getExistingDirectory(None, "请选择文件夹路径", "D:/")
         self.path = filepath
-        self.ui.plainTextEdit.appendPlainText(f"选择的路径为：{filepath}")
+        self.add_log_text(f"选择的路径为：{filepath}")
         self.ui.getpathbutton.toggle()
 
-    def storage(self):      # 识别提取并存入数据库
-        if self.path == '':
-            self.ui.plainTextEdit.appendPlainText("请先选择文件夹路径！")
-            return
-        # read_files2(self.path)
-        self.ui.plainTextEdit.appendPlainText("导入成功！")
-        self.path = ''
+    # def storage(self):      # 识别提取并存入数据库
+    #     if self.path == '':
+    #         self.ui.plainTextEdit.appendPlainText("请先选择文件夹路径！")
+    #         return
+    #     # read_files2(self.path)
+    #     self.ui.plainTextEdit.appendPlainText("导入成功！")
+    #     self.path = ''
 
     def selectionchange1(self):     # 设置下拉框
         self.ui.list2.clear()

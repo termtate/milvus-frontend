@@ -1,6 +1,7 @@
 from ui.gui import UiInterface
 from network.api import get_patients_by_ann_search, get_patients_by_fields, get_patients_by_id
 from network.model import Patient
+import pandas as pd
 
 class Presenter:
     def __init__(self, view: UiInterface):
@@ -45,4 +46,16 @@ class Presenter:
         # TODO
         pass
     
+    def upload_file_to_database(self):
+        if len(self.view.file_path) == 0:
+            self.view.add_log_text("请先选择文件夹路径！")
+            return
+        self._upload(self.view.file_path)
+        self.view.add_log_text("导入成功！")
+        self.view.clear_file_path()
+        
+    def _upload(self, path: str) -> list[Patient]:
+        df = pd.read_excel(path)
+        columns = tuple(df.columns)
+        return [Patient(**dict(zip(columns, row))) for row in df.values.tolist()]
     
