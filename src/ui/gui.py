@@ -40,21 +40,9 @@ class UiInterface(ABC):
     def get_advanced_search_field(self) -> str:
         pass
     
-    # @abstractmethod
-    # def show_file_selector(self) -> str:
-    #     pass
-    
     @abstractmethod
     def add_log_text(self, text: str):
         pass
-    
-    # @abstractmethod
-    # def clear_log_text(self):
-    #     pass
-    
-    # @abstractmethod
-    # def toggle_get_path_button(self):
-    #     pass
     
     @property
     @abstractmethod
