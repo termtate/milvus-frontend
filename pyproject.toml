@@ -40,3 +40,6 @@ dev-dependencies = []
 allow-direct-references = true
 
 
+[[sources]]
+name = "default"
+url = "https://mirror.baidu.com/pypi/simple"
