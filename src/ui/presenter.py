@@ -31,7 +31,7 @@ class Presenter:
             self.view.show_critical_message('输入不能为空！')
             return
 
-        res = get_patients_by_ann_search(query=text)
+        res = get_patients_by_ann_search(query=text, field=field)
         
         self.view.show_search_patients_number(len(res))
         self.view.show_patients_on_table(res)

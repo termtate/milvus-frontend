@@ -28,9 +28,10 @@ def get_patients_by_fields(
 ):
     return _get(url, params=fields)
 
-def get_patients_by_ann_search(query: str, **params: Unpack[AnnSearchParams]):
+def get_patients_by_ann_search(query: str, field: str, **params: Unpack[AnnSearchParams]):
     config = dict(params)
     config["query"] = query
+    config["field"] = field
     return _get(f"{url}/ann_search", params=params)
 
 
