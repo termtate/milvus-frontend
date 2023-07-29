@@ -37,7 +37,7 @@ class Presenter:
         self.view.show_patients_on_table(res)
     
     def update_patient_field(self, row: int, column: int):
-        # TODO 根据
+        # TODO 根据修改的单元格更新数据
         pass
 
         

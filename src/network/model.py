@@ -4,8 +4,7 @@ from pydantic import RootModel, BaseModel
 from typing_extensions import Required
 
 
-class Patient(BaseModel):
-    id: int
+class PatientBase(BaseModel):
     id_card_number: str
     hospitalize_num: str
     name: str
@@ -17,6 +16,12 @@ class Patient(BaseModel):
     seizure_evolution: str
 
 
+class PatientCreate(PatientBase):
+    pass
+
+
+class Patient(PatientBase):
+    id: int
     
 class PatientList(RootModel):
     root: list[Patient]
@@ -35,3 +40,10 @@ class PatientQueryFields(TypedDict, total=False):
     age: str 
     phone_number: str
     
+class ModifyResponse(BaseModel):
+    insert_count: int
+    delete_count: int
+    upsert_count: int
+    timestamp: int
+    succ_count: int
+    err_count: int
