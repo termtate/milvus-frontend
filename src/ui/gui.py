@@ -3,7 +3,6 @@ from PySide2.QtWidgets import QTableWidgetItem, QWidget, QPushButton, QProgressB
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QMessageBox, QFileDialog, QTableWidget
 from PySide2.QtCore import Slot
-from network.api import get_patients_by_ann_search, get_patients_by_fields, get_patients_by_id
 from network.model import Patient
 
 from qt_material import apply_stylesheet
@@ -43,6 +42,7 @@ class UiInterface(ABC):
     
     
 TABLE_COLUMNS = ('ID', "身份证号", '第几次住院', '姓名', '病案号', '性别', '年龄', '电话', '发作演变过程')
+ANN_SEARCH_FIELDS = ("发作演变过程", ) # TODO 
 
 
 
@@ -171,7 +171,7 @@ class TestWin(UiInterface):
     def selectionchange1(self):     # 设置下拉框
         self.ui.list2.clear()
         if self.ui.list1.currentText() == '表1':
-            self.ui.list2.addItems(['发作演变过程'])
+            self.ui.list2.addItems(list(ANN_SEARCH_FIELDS))
             # self.ui.list2.addItems(['症状性癫痫', '发育迟缓', '抽动症', '注意缺陷多动障碍', '自闭症', '局灶运动性发作', '局灶非运动发作', '局灶性继发双侧强直_阵挛发作',
             #                         '全面性运动性发作', '全面性非运动性发作', '新生儿期起病', '婴儿期起病', '儿童期起病', '青少年_成年期起病', '与年龄无特殊关系的癫痫综合征',
             #                         '其他癫痫综合征'])
@@ -188,10 +188,3 @@ class TestWin(UiInterface):
             self.ui.list2.addItems(['血氨', '血乳酸', '血、尿代谢筛查', '电解质', '铜兰蛋白', '脑脊液', '基因检查', '头部CT',
                                     '头部MRI', '头皮脑电图', '抗癫痫药物', '生酮饮食', '癫痫外科'])
 
-
-
-app = QApplication([])
-apply_stylesheet(app, "light_blue.xml", invert_secondary=True)
-win = TestWin()
-win.ui.show()
-app.exec_()
