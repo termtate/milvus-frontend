@@ -45,6 +45,7 @@ class UiInterface(ABC):
 TABLE_COLUMNS = ('ID', "身份证号", '第几次住院', '姓名', '病案号', '性别', '年龄', '电话', '发作演变过程')
 
 
+
 class TestWin(UiInterface):
     def __init__(self):
         # self.path = ''
