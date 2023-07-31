@@ -40,7 +40,7 @@
 	padding: 10px 15px 10px 15px;
 	border-top-right-radius:10px;
 	border-bottom-right-radius:10px;
-	background-image:url(ui/search2.png);
+	background-image:url(assets/search2.png);
 	background-position:center;
 	background-repeat:no-repeat;
 }
@@ -51,7 +51,7 @@
 	font-size:20px;
 	padding: 10px 15px 10px 0px;
 	border-radius:10px;
-	background-image:url(ui/search2.png);
+	background-image:url(assets/search2.png);
 	background-position:right;
 	background-repeat:no-repeat;
 }
@@ -318,7 +318,7 @@
                     <widget class="QLabel" name="label_i1">
                      <property name="styleSheet">
                       <string notr="true">*{
-	background-image:url(ui/i.png);
+	background-image:url(assets/i.png);
 	background-position:center;
 	background-repeat:no-repeat;
 }</string>
@@ -369,7 +369,7 @@
                     <widget class="QLabel" name="label_i1_2">
                      <property name="styleSheet">
                       <string notr="true">*{
-	background-image:url(ui/i.png);
+	background-image:url(assets/i.png);
 	background-position:center;
 	background-repeat:no-repeat;
 }</string>
@@ -716,7 +716,7 @@
                     <widget class="QLabel" name="label_i1_3">
                      <property name="styleSheet">
                       <string notr="true">*{
-	background-image:url(ui/i.png);
+	background-image:url(assets/i.png);
 	background-position:center;
 	background-repeat:no-repeat;
 }</string>
@@ -767,7 +767,7 @@
                     <widget class="QLabel" name="label_i1_4">
                      <property name="styleSheet">
                       <string notr="true">*{
-	background-image:url(ui/i.png);
+	background-image:url(assets/i.png);
 	background-position:center;
 	background-repeat:no-repeat;
 }</string>
@@ -956,7 +956,7 @@
          <layout class="QVBoxLayout" name="verticalLayout_13">
           <item>
            <widget class="QPlainTextEdit" name="plainTextEdit">
-            <property name="tabStopWidth">
+            <property name="tabStopWidth" stdset="0">
              <number>80</number>
             </property>
            </widget>
@@ -988,7 +988,7 @@
      <x>0</x>
      <y>0</y>
      <width>949</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

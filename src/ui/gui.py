@@ -2,69 +2,28 @@ from PySide2 import QtWidgets
 from PySide2.QtWidgets import QTableWidgetItem, QWidget, QPushButton, QProgressBar
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QMessageBox, QFileDialog, QTableWidget
-from PySide2.QtCore import Slot
+from PySide2.QtCore import Slot, QFile
 from network.model import Patient
-
 from qt_material import apply_stylesheet
+from ui.interface import ANN_SEARCH_FIELDS, TABLE_COLUMNS
 
-from abc import ABC, abstractmethod
 from ui.presenter import Presenter
-
-# import predict
-# from config import *
-# from predict import *
-
-
-class UiInterface(ABC):
-    @abstractmethod
-    def clear_table(self):
-        pass
-    
-    @abstractmethod
-    def get_search_text(self) -> str:
-        pass
-    
-    @abstractmethod
-    def show_critical_message(self, msg: str):
-        pass
-    
-    @abstractmethod
-    def show_search_patients_number(self, num: int):
-        pass
-    
-    @abstractmethod
-    def show_patients_on_table(self, data: list[Patient]):
-        pass
-    
-    @abstractmethod
-    def get_advanced_search_field(self) -> str:
-        pass
-    
-    @abstractmethod
-    def add_log_text(self, text: str):
-        pass
-    
-    @property
-    @abstractmethod
-    def file_path(self) -> str:
-        pass
-    
-    
-    @abstractmethod
-    def clear_file_path(self):
-        pass
-    
-    
-TABLE_COLUMNS = ('ID', "身份证号", '第几次住院', '姓名', '病案号', '性别', '年龄', '电话', '发作演变过程')
-ANN_SEARCH_FIELDS = ("发作演变过程", ) # TODO 
-
-
+from ui import UiInterface
 
 class TestWin(UiInterface):
     def __init__(self):
+        qfile = QFile("assets/main.ui")
+        
+        qfile.open(QFile.ReadOnly)
+        
+        self.ui = QUiLoader().load(qfile)
+        
+        qfile.close()
+        
         self.path = ''
+        self.file_name = ""
         # self.search_state=0
-        self.ui = QUiLoader().load('main.ui')
+        
         self.presenter = Presenter(self)
 
         self.ui.searchButton.clicked.connect(self.presenter.common_search)
@@ -74,7 +33,7 @@ class TestWin(UiInterface):
         self.ui.stack2Button.clicked.connect(self.display2)
         self.ui.list1.currentIndexChanged.connect(self.selectionchange1)
         self.ui.getpathbutton.clicked.connect(lambda: self.getfile(self.ui.getpathbutton))
-        self.ui.getpathbutton.clicked.connect(lambda: self.getpath())
+        # self.ui.getpathbutton.clicked.connect(lambda: self.getpath())
         self.ui.pushButton.clicked.connect(self.presenter.upload_file_to_database)
         self.ui.table.cellChanged.connect(self.presenter.update_patient_field)
         self.ui.pushButton_2.clicked.connect(self.presenter.delete_all_patients)
@@ -82,9 +41,16 @@ class TestWin(UiInterface):
         # cnames = ['ID', "身份证号", '第几次住院', '姓名', '病案号', '性别', '年龄', '电话', '发作演变过程']
         self.ui.table.setColumnCount(len(TABLE_COLUMNS))
         self.ui.table.setHorizontalHeaderLabels(TABLE_COLUMNS)
-        # self.flag = True
+        self._refreshing = False
         # self.list = []
     
+    @property
+    def table(self):
+        return self.ui.table
+    
+    @property
+    def refreshing(self) -> bool:
+        return self._refreshing
     
     def clear_table(self):
         self.ui.table.setRowCount(0)
@@ -103,10 +69,13 @@ class TestWin(UiInterface):
         self.ui.numlabel1.setText(f'搜索结果：{num}人')
     
     def show_patients_on_table(self, data: list[Patient]):
+        self._refreshing = True
         for i in range(len(data)):
             self.ui.table.insertRow(i)
             for index, value in enumerate(data[i].model_dump().values()):
                 self.ui.table.setItem(i, index, QTableWidgetItem(str(value)))
+        
+        self._refreshing = False
                 
     def get_advanced_search_field(self):
         return self.ui.list2.currentText()
@@ -132,6 +101,9 @@ class TestWin(UiInterface):
     
     def clear_file_path(self):
         self.path = ''
+        
+    def get_table_item(self, row: int, col: int) -> QTableWidgetItem:
+        return self.ui.table.item(row, col)
 
 
     # def revise(self, row, column):  # 修改数据库
@@ -184,17 +156,18 @@ class TestWin(UiInterface):
     def getfile(self, button):
         filename, filetype = QFileDialog.getOpenFileName(self.ui, "选取文件", "./data",
                                                          "Excel Files (*.xls *.xlsx)")
+        self.path = filename
         if button.isChecked():
             self.add_log_text(f"需要读取的路径为:{filename}")
             self.add_log_text(f"文件格式为:{filetype}")
         button.toggle()
 
-    def getpath(self):      # 读取路径
-        self.ui.plainTextEdit.clear()
-        filepath = QtWidgets.QFileDialog.getExistingDirectory(None, "请选择文件夹路径", "D:/")
-        self.path = filepath
-        self.add_log_text(f"选择的路径为：{filepath}")
-        self.ui.getpathbutton.toggle()
+    # def getpath(self):      # 读取路径
+    #     self.ui.plainTextEdit.clear()
+    #     filepath = QtWidgets.QFileDialog.getExistingDirectory(None, "请选择文件夹路径", "D:/")
+    #     self.path = f"{filepath}/{self.file_name}"
+    #     self.add_log_text(f"选择的路径为：{filepath}")
+    #     self.ui.getpathbutton.toggle()
 
     # def storage(self):      # 识别提取并存入数据库
     #     if self.path == '':
@@ -224,3 +197,8 @@ class TestWin(UiInterface):
             self.ui.list2.addItems(['血氨', '血乳酸', '血、尿代谢筛查', '电解质', '铜兰蛋白', '脑脊液', '基因检查', '头部CT',
                                     '头部MRI', '头皮脑电图', '抗癫痫药物', '生酮饮食', '癫痫外科'])
 
+# app = QApplication([])
+# apply_stylesheet(app, "light_blue.xml", invert_secondary=True)
+# win = TestWin()
+# win.ui.show()
+# app.exec_()

@@ -1,27 +1,42 @@
 from pydantic.dataclasses import dataclass
 from typing import Literal, TypedDict
-from pydantic import RootModel, BaseModel
+from pydantic import RootModel, BaseModel, ConfigDict
 from typing_extensions import Required
 
 
-class PatientBase(BaseModel):
+class Patient(BaseModel):
+    id: int
     id_card_number: str
-    hospitalize_num: str
     name: str
-    
+    hospitalize_num: str
     case_number: str
-    sex: Literal["男", "女"]
+    sex: str
     age: str
     phone_number: str
     seizure_evolution: str
+    seizure_duration: str
+    seizure_freq: str
+    maternal_pregnancy_age: str
+    pregnancy_num: str
+    birth_weight: str
+    head_c: str
+    blood_urine_screening: str
+    copper_cyanin: str
+    csf: str
+    genetic_test: str
+    head_ct: str
+    head_mri: str
+    scalp_eeg: str
+    precipitating_factor: str
 
 
-class PatientCreate(PatientBase):
-    pass
+# class PatientCreate(Patient):
+#     model_config = ConfigDict()
+    
+#     class Config:
+#         fields = {'id': {'exclude': True}}
 
 
-class Patient(PatientBase):
-    id: int
     
 class PatientList(RootModel):
     root: list[Patient]
