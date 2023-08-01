@@ -25,6 +25,7 @@ dependencies = [
     "httpx>=0.24.1",
     "qt-material>=2.14",
     "openpyxl>=3.1.2",
+    "reactivex>=4.0.4",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"

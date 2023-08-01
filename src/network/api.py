@@ -35,7 +35,7 @@ def get_patients_by_ann_search(query: str, field: str, **params: Unpack[AnnSearc
     config = dict(params)
     config["query"] = query
     config["field"] = field
-    return _get(f"{url}/ann_search", params=params)
+    return _get(f"{url}/ann_search", params=config)
 
 
 def delete_patients(*patients_id: int):

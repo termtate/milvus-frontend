@@ -1,5 +1,5 @@
 from PySide2 import QtWidgets
-from PySide2.QtWidgets import QTableWidgetItem, QWidget, QPushButton, QProgressBar
+from PySide2.QtWidgets import QTableWidgetItem, QWidget, QPushButton, QProgressBar, QStackedWidget
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QMessageBox, QFileDialog, QTableWidget
 from PySide2.QtCore import Slot, QFile
@@ -10,6 +10,8 @@ from ui.interface import ANN_SEARCH_FIELDS, TABLE_COLUMNS
 from ui.presenter import Presenter
 from ui import UiInterface
 
+# a = QStackedWidget()
+# a.currentIndex
 class TestWin(UiInterface):
     def __init__(self):
         qfile = QFile("assets/main.ui")
@@ -54,9 +56,12 @@ class TestWin(UiInterface):
     
     def clear_table(self):
         self.ui.table.setRowCount(0)
+        
+    
     
     def get_search_text(self) -> str:
-        return self.ui.searchtext1.text()
+        return self.ui.searchtext1.text() if self.ui.stacks.currentIndex() == 0 \
+            else self.ui.searchtext2.text()
     
     def show_critical_message(self, msg: str):
         QMessageBox.critical(
