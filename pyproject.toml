@@ -7,8 +7,6 @@ authors = [
 ]
 dependencies = [
     "pandas==1.5.0",
-    # "PyMySQL==1.0.2",
-    "PySide2==5.15.2.1",
     # "pytorch_crf==0.7.2",
     # "seqeval==1.2.2",
     # "torch==1.12.1",
@@ -26,6 +24,10 @@ dependencies = [
     "qt-material>=2.14",
     "openpyxl>=3.1.2",
     "reactivex>=4.0.4",
+    "qasync>=0.24.0",
+    "pyside6>=6.5.2",
+    "injector>=0.21.0",
+    "pydantic-settings>=2.0.2",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"

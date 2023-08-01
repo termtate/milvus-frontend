@@ -30,18 +30,6 @@ class Patient(BaseModel):
     precipitating_factor: str
 
 
-# class PatientCreate(Patient):
-#     model_config = ConfigDict()
-    
-#     class Config:
-#         fields = {'id': {'exclude': True}}
-
-
-    
-class PatientList(RootModel):
-    root: list[Patient]
-
-
 class AnnSearchParams(TypedDict, total=False):
     limit: int  # 10 by default
 

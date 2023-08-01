@@ -3,16 +3,24 @@
 ################################################################################
 ## Form generated from reading UI file 'main.ui'
 ##
-## Created by: Qt User Interface Compiler version 5.15.2
+## Created by: Qt User Interface Compiler version 6.5.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
-
-import qrc1_rc
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QUrl, Qt)
+from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+    QFont, QFontDatabase, QGradient, QIcon,
+    QImage, QKeySequence, QLinearGradient, QPainter,
+    QPalette, QPixmap, QRadialGradient, QTransform)
+from PySide6.QtWidgets import (QApplication, QComboBox, QGroupBox, QHBoxLayout,
+    QHeaderView, QLabel, QLineEdit, QMainWindow,
+    QMenuBar, QPlainTextEdit, QPushButton, QSizePolicy,
+    QSpacerItem, QStackedWidget, QStatusBar, QTabWidget,
+    QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget)
+import assets.qrc1_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -181,7 +189,9 @@ class Ui_MainWindow(object):
         self.searchButton = QPushButton(self.page)
         self.searchButton.setObjectName(u"searchButton")
         self.searchButton.setCursor(QCursor(Qt.PointingHandCursor))
-        self.searchButton.setStyleSheet(u"")
+        self.searchButton.setStyleSheet(u"background-image: url(:/icon/search2.png);\n"
+"	background-repeat:no-repeat;\n"
+"	background-position:center;   ")
 
         self.horizontalLayout_3.addWidget(self.searchButton)
 
@@ -196,7 +206,7 @@ class Ui_MainWindow(object):
         self.label_i1 = QLabel(self.page)
         self.label_i1.setObjectName(u"label_i1")
         self.label_i1.setStyleSheet(u"*{\n"
-"	background-image:url(assets/i.png);\n"
+"	background-image:url(:/icon/i.png);\n"
 "	background-position:center;\n"
 "	background-repeat:no-repeat;\n"
 "}")
@@ -233,7 +243,7 @@ class Ui_MainWindow(object):
         self.label_i1_2 = QLabel(self.page)
         self.label_i1_2.setObjectName(u"label_i1_2")
         self.label_i1_2.setStyleSheet(u"*{\n"
-"	background-image:url(assets/i.png);\n"
+"	background-image:url(:/icon/i.png);\n"
 "	background-position:center;\n"
 "	background-repeat:no-repeat;\n"
 "}")
@@ -417,7 +427,7 @@ class Ui_MainWindow(object):
         self.label_i1_3 = QLabel(self.page_2)
         self.label_i1_3.setObjectName(u"label_i1_3")
         self.label_i1_3.setStyleSheet(u"*{\n"
-"	background-image:url(assets/i.png);\n"
+"	background-image:url(:/icon/i.png);\n"
 "	background-position:center;\n"
 "	background-repeat:no-repeat;\n"
 "}")
@@ -454,7 +464,7 @@ class Ui_MainWindow(object):
         self.label_i1_4 = QLabel(self.page_2)
         self.label_i1_4.setObjectName(u"label_i1_4")
         self.label_i1_4.setStyleSheet(u"*{\n"
-"	background-image:url(assets/i.png);\n"
+"	background-image:url(:/icon/i.png);\n"
 "	background-position:center;\n"
 "	background-repeat:no-repeat;\n"
 "}")
@@ -512,6 +522,14 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setSpacing(7)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(11, 0, 11, 0)
+        self.loading_label = QLabel(self.groupBox_3)
+        self.loading_label.setObjectName(u"loading_label")
+        self.loading_label.setEnabled(True)
+        self.loading_label.setLayoutDirection(Qt.LeftToRight)
+        self.loading_label.setMargin(0)
+
+        self.verticalLayout_2.addWidget(self.loading_label)
+
         self.table = QTableWidget(self.groupBox_3)
         if (self.table.columnCount() < 7):
             self.table.setColumnCount(7)
@@ -530,12 +548,12 @@ class Ui_MainWindow(object):
         __qtablewidgetitem6 = QTableWidgetItem()
         self.table.setHorizontalHeaderItem(6, __qtablewidgetitem6)
         self.table.setObjectName(u"table")
+        self.table.setEnabled(True)
         self.table.setDefaultDropAction(Qt.IgnoreAction)
         self.table.horizontalHeader().setStretchLastSection(False)
 
         self.verticalLayout_2.addWidget(self.table)
 
-        self.verticalLayout_2.setStretch(0, 10)
 
         self.verticalLayout_10.addWidget(self.groupBox_3)
 
@@ -663,6 +681,7 @@ class Ui_MainWindow(object):
         self.pushButton_4.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664\u9009\u4e2d", None))
         self.pushButton_5.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664\u5168\u90e8", None))
         self.groupBox_3.setTitle("")
+        self.loading_label.setText(QCoreApplication.translate("MainWindow", u"\u52a0\u8f7d\u4e2d", None))
         ___qtablewidgetitem = self.table.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"\u59d3\u540d", None));
         ___qtablewidgetitem1 = self.table.horizontalHeaderItem(1)
