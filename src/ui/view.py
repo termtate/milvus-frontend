@@ -1,6 +1,6 @@
 from typing import Any
 from PySide6 import QtWidgets
-from PySide6.QtWidgets import QTableWidgetItem
+from PySide6.QtWidgets import QTableWidgetItem, QCheckBox
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtWidgets import QMessageBox, QFileDialog, QListWidgetItem, QMainWindow
 from injector import inject
@@ -18,11 +18,11 @@ class TestWin(QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        
+
         self.path = ''
         self.file_name = ""
         # self.search_state=0
-        
+
         self.viewmodel = viewmodel
         self.state = self.viewmodel.state
         self.state.subscribe(
@@ -44,8 +44,18 @@ class TestWin(QMainWindow):
 
         self.ui.list1.currentIndexChanged.connect(self.selectionchange1)
         # self.ui.getpathbutton.clicked.connect(lambda: self.getfile(self.ui.getpathbutton))
-        self.ui.getpathbutton.clicked.connect(lambda: self.getpath())
-        # self.ui.pushButton.clicked.connect(self.presenter.upload_file_to_database)
+        self.ui.getpathbutton.clicked.connect(self.getpath)
+        def storage():  # 识别提取并存入数据库
+            if not self.path:
+                self.ui.plainTextEdit.appendPlainText("请先选择文件夹路径！")
+                return
+            res = self.viewmodel.upload_file(self.path)
+            self.ui.plainTextEdit.appendPlainText("导入成功！")
+            self.path = ''
+            return res
+
+        self.ui.pushButton.clicked.connect(storage)
+
         def update(item):
             if not self._refreshing:
                 return self.viewmodel.update_field(
@@ -55,6 +65,11 @@ class TestWin(QMainWindow):
                 )
 
         self.ui.table.itemChanged.connect(update)
+
+        self.ui.delete_selected_button.clicked.connect(self.delete_selected)
+        self.ui.delete_selected_button_2.clicked.connect(self.delete_selected)
+        self.ui.delete_all_button.clicked.connect(self.delete_all)
+        self.ui.delete_all_button_2.clicked.connect(self.delete_all)
         # self.ui.pushButton_2.clicked.connect(self.presenter.delete_all_patients)
         # self.ui.setWindowTitle('病历查询')
         # cnames = ['ID', "身份证号", '第几次住院', '姓名', '病案号', '性别', '年龄', '电话', '发作演变过程']
@@ -96,6 +111,20 @@ class TestWin(QMainWindow):
                 self.ui.table.setItem(i, index, QTableWidgetItem(str(value)))
         
         self._refreshing = False
+    
+    def delete_selected(self):
+        ids = {
+            int(self.ui.table.item(item.row(), 0).text()) for item in self.ui.table.selectedItems()
+        }
+        return self.viewmodel.delete_patients(*ids)
+    
+    def delete_all(self):
+        ids = [
+            int(self.ui.table.item(row, 0).text())
+            for row in range(self.ui.table.rowCount())
+        ]
+        return self.viewmodel.delete_patients(*ids)
+        
 
     def display1(self):
         # print('普通按钮被点击了')
@@ -112,13 +141,7 @@ class TestWin(QMainWindow):
         self.ui.plainTextEdit.appendPlainText(f"选择的路径为：{filepath}")
         self.ui.getpathbutton.toggle()
 
-    # def storage(self):      # 识别提取并存入数据库
-    #     if self.path == '':
-    #         self.ui.plainTextEdit.appendPlainText("请先选择文件夹路径！")
-    #         return
-    #     # read_files2(self.path)
-    #     self.ui.plainTextEdit.appendPlainText("导入成功！")
-    #     self.path = ''
+
 
     def selectionchange1(self):     # 设置下拉框
         self.ui.list2.clear()

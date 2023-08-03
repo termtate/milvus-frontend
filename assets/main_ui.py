@@ -267,15 +267,15 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addItem(self.verticalSpacer)
 
-        self.pushButton_3 = QPushButton(self.page)
-        self.pushButton_3.setObjectName(u"pushButton_3")
+        self.delete_selected_button = QPushButton(self.page)
+        self.delete_selected_button.setObjectName(u"delete_selected_button")
 
-        self.verticalLayout_3.addWidget(self.pushButton_3)
+        self.verticalLayout_3.addWidget(self.delete_selected_button)
 
-        self.pushButton_2 = QPushButton(self.page)
-        self.pushButton_2.setObjectName(u"pushButton_2")
+        self.delete_all_button = QPushButton(self.page)
+        self.delete_all_button.setObjectName(u"delete_all_button")
 
-        self.verticalLayout_3.addWidget(self.pushButton_2)
+        self.verticalLayout_3.addWidget(self.delete_all_button)
 
         self.stacks.addWidget(self.page)
         self.page_2 = QWidget()
@@ -484,15 +484,15 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_9.addLayout(self.horizontalLayout_10)
 
-        self.pushButton_4 = QPushButton(self.page_2)
-        self.pushButton_4.setObjectName(u"pushButton_4")
+        self.delete_selected_button_2 = QPushButton(self.page_2)
+        self.delete_selected_button_2.setObjectName(u"delete_selected_button_2")
 
-        self.verticalLayout_9.addWidget(self.pushButton_4)
+        self.verticalLayout_9.addWidget(self.delete_selected_button_2)
 
-        self.pushButton_5 = QPushButton(self.page_2)
-        self.pushButton_5.setObjectName(u"pushButton_5")
+        self.delete_all_button_2 = QPushButton(self.page_2)
+        self.delete_all_button_2.setObjectName(u"delete_all_button_2")
 
-        self.verticalLayout_9.addWidget(self.pushButton_5)
+        self.verticalLayout_9.addWidget(self.delete_all_button_2)
 
         self.verticalLayout_9.setStretch(0, 2)
         self.verticalLayout_9.setStretch(1, 3)
@@ -619,7 +619,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         self.tabWidget.setCurrentIndex(0)
-        self.stacks.setCurrentIndex(0)
+        self.stacks.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -644,8 +644,8 @@ class Ui_MainWindow(object):
         self.numlabel1.setText(QCoreApplication.translate("MainWindow", u"\u641c\u7d22\u7ed3\u679c\uff1a0\u4eba", None))
         self.label_i1_2.setText("")
         self.label_pt_2.setText(QCoreApplication.translate("MainWindow", u"\u9ad8\u7ea7\u641c\u7d22\uff1a\u6839\u636e\u67d0\u4e2a\u5b57\u6bb5\u6765\u641c\u7d22", None))
-        self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664\u9009\u4e2d", None))
-        self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"\u5168\u90e8\u5220\u9664", None))
+        self.delete_selected_button.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664\u9009\u4e2d", None))
+        self.delete_all_button.setText(QCoreApplication.translate("MainWindow", u"\u5168\u90e8\u5220\u9664", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"\u76ee\u6807\u8868", None))
         self.list1.setItemText(0, QCoreApplication.translate("MainWindow", u"\u88681", None))
         self.list1.setItemText(1, QCoreApplication.translate("MainWindow", u"\u88682", None))
@@ -678,8 +678,8 @@ class Ui_MainWindow(object):
         self.numlabel1_2.setText(QCoreApplication.translate("MainWindow", u"\u641c\u7d22\u7ed3\u679c\uff1a0\u4eba", None))
         self.label_i1_4.setText("")
         self.label_pt_4.setText(QCoreApplication.translate("MainWindow", u"\u9ad8\u7ea7\u641c\u7d22\uff1a\u6839\u636e\u67d0\u4e2a\u5b57\u6bb5\u6765\u641c\u7d22\uff08\u9ed8\u8ba4\u641c\u7d22\u8be5\u5b57\u6bb5\u975e\u7a7a\u7684\u75c5\u5386\uff09", None))
-        self.pushButton_4.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664\u9009\u4e2d", None))
-        self.pushButton_5.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664\u5168\u90e8", None))
+        self.delete_selected_button_2.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664\u9009\u4e2d", None))
+        self.delete_all_button_2.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664\u5168\u90e8", None))
         self.groupBox_3.setTitle("")
         self.loading_label.setText(QCoreApplication.translate("MainWindow", u"\u52a0\u8f7d\u4e2d", None))
         ___qtablewidgetitem = self.table.horizontalHeaderItem(0)

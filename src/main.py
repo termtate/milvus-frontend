@@ -1,4 +1,3 @@
-
 import sys
 from PySide6.QtWidgets import QApplication
 import qasync
@@ -7,7 +6,7 @@ from injector import Injector
 from qt_material import apply_stylesheet
 import asyncio
 import functools
-
+from ml.di import PaddleOCRModule
 
 async def main():
     def close_future(future, loop):
@@ -24,7 +23,7 @@ async def main():
             functools.partial(close_future, future, loop)
         )
 
-    injector = Injector()
+    injector = Injector([PaddleOCRModule()])
     win = injector.get(TestWin)
     win.show()
 

@@ -1,7 +1,8 @@
 from functools import wraps
 from typing import Any, Sequence
 from typing_extensions import Unpack, TypedDict
-from pydantic import BaseModel
+from pydantic import BaseModel, TypeAdapter
+from ml.recognize import Recognizer
 from network.model import Patient
 from reactivex.subject import BehaviorSubject
 from qasync import asyncSlot, asyncClose
@@ -26,7 +27,7 @@ class StateDict(TypedDict, total=False):
 
 class ViewModel:
     @inject
-    def __init__(self, client: Client):
+    def __init__(self, client: Client, recognizer: Recognizer):
         self.state: BehaviorSubject[State] = BehaviorSubject(
             State(
                 is_loading=False,
@@ -36,6 +37,7 @@ class ViewModel:
             )
         )
         self.client = client
+        self.recognizer = recognizer
         
     
     def _update(self, **values: Unpack[StateDict]):
@@ -72,8 +74,8 @@ class ViewModel:
             self._update(error_message='输入不能为空！')
             return
         patients = await self.client.get_patients_by_ann_search(
-            query=settings.COLUMNS_NAME_MAP[query],
-            field=field
+            query=query,
+            field=settings.COLUMNS_NAME_MAP[field]
         )
         self._update(table_data=patients)
     
@@ -85,11 +87,31 @@ class ViewModel:
         items = list(self.state.value.table_data)
         for item in items:
             if item.id == id:
+                
                 setattr(item, settings.COLUMNS_NAME_MAP[field], value)
         
         self._update(table_data=items)
     
+    @asyncSlot()
+    @with_loading_state
+    async def upload_file(self, path: str):
+        # TODO
+        pass
+        # print(path)
+        # self.recognizer.read_files2(path)
     
+    @asyncSlot()
+    @with_loading_state
+    async def delete_patients(self, *id: int):
+        await self.client.delete_patients(*id)
+        
+        items = list(filter(
+            lambda item: item.id not in id,
+            self.state.value.table_data
+        ))
+        
+        self._update(table_data=items)
+        
     
     def on_error_dismiss(self):
         self._update(error_message=None)
@@ -97,7 +119,4 @@ class ViewModel:
     @asyncClose
     async def close(self, event):
         await self.client.close()
-        
-
-
     

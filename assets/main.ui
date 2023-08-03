@@ -243,7 +243,7 @@
              <item>
               <widget class="QStackedWidget" name="stacks">
                <property name="currentIndex">
-                <number>0</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="page">
                 <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -409,14 +409,14 @@
                   </spacer>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="pushButton_3">
+                  <widget class="QPushButton" name="delete_selected_button">
                    <property name="text">
                     <string>删除选中</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="pushButton_2">
+                  <widget class="QPushButton" name="delete_all_button">
                    <property name="text">
                     <string>全部删除</string>
                    </property>
@@ -794,14 +794,14 @@
                   </layout>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="pushButton_4">
+                  <widget class="QPushButton" name="delete_selected_button_2">
                    <property name="text">
                     <string>删除选中</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="pushButton_5">
+                  <widget class="QPushButton" name="delete_all_button_2">
                    <property name="text">
                     <string>删除全部</string>
                    </property>
