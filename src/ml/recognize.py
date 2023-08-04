@@ -68,7 +68,7 @@ class Recognizer:
         labels = label_list()
         # print(labels)
         output = read_info(text)
-        pprint(labels)
+        # pprint(labels)
         for l in labels:
             output.append([l, ''])
         for i, label_name in enumerate(labels, start=20):
@@ -77,7 +77,7 @@ class Recognizer:
                     if output[i][1] != '':
                         output[i][1] += '，'
                     output[i][1] += per[1]
-        # print(output)
+        pprint(dict(output))
 
         sqlstr = list(map(str, labels))
         sqlstr = ','.join(sqlstr)

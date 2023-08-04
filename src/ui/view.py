@@ -1,3 +1,4 @@
+import asyncio
 from typing import Any
 from PySide6 import QtWidgets
 from PySide6.QtWidgets import QTableWidgetItem, QCheckBox
@@ -9,7 +10,7 @@ from typing import Sequence
 from config import settings
 from ui.viewmodel import State, ViewModel
 from assets.main_ui import Ui_MainWindow
-from qasync import asyncSlot
+from qasync import asyncSlot, run
 
 
 class TestWin(QMainWindow):
@@ -65,8 +66,8 @@ class TestWin(QMainWindow):
                 )
 
         self.ui.table.itemChanged.connect(update)
-
         self.ui.delete_selected_button.clicked.connect(self.delete_selected)
+        # self.ui.delete_selected_button.clicked.connect(self.delete_selected)
         self.ui.delete_selected_button_2.clicked.connect(self.delete_selected)
         self.ui.delete_all_button.clicked.connect(self.delete_all)
         self.ui.delete_all_button_2.clicked.connect(self.delete_all)
@@ -77,6 +78,10 @@ class TestWin(QMainWindow):
         self.ui.table.setHorizontalHeaderLabels(settings.TABLE_COLUMNS)
         self._refreshing = False
         # self.list = []
+    
+    async def a(self):
+        await asyncio.sleep(2)
+        self.ui.delete_selected_button.setText("OK!")
         
     
     def observe(self, state: State):
@@ -94,6 +99,7 @@ class TestWin(QMainWindow):
                 self.ui.table.setRowCount(0)
                 self.show_patients_on_table(table_data)
                 self.ui.numlabel1.setText(f'搜索结果：{len(table_data)}人')
+                
     
     
     def show_critical_message(self, msg: str):
