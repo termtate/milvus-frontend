@@ -12,3 +12,7 @@ wheels/
 # ide
 .idea
 .vscode
+
+# test
+test*/
+test*.py

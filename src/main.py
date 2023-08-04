@@ -1,10 +1,37 @@
+import sys
+from PySide6.QtWidgets import QApplication
+import qasync
+from ui.view import TestWin
+from injector import Injector
 from qt_material import apply_stylesheet
-from PySide2.QtWidgets import QApplication
-from ui.gui import TestWin
+import asyncio
+import functools
+from ml.di import PaddleOCRModule
+
+async def main():
+    def close_future(future, loop):
+        loop.call_later(10, future.cancel)
+        future.cancel()
+        
+    loop = asyncio.get_event_loop()
+    future = asyncio.Future()
+
+    app = QApplication.instance()
+    apply_stylesheet(app, "light_blue.xml", invert_secondary=True)
+    if hasattr(app, "aboutToQuit"):
+        getattr(app, "aboutToQuit").connect(
+            functools.partial(close_future, future, loop)
+        )
+
+    injector = Injector([PaddleOCRModule()])
+    win = injector.get(TestWin)
+    win.show()
+
+    await future
+    return True
 
 if __name__ == "__main__":
-    app = QApplication([])
-    apply_stylesheet(app, "light_blue.xml", invert_secondary=True)
-    win = TestWin()
-    win.ui.show()
-    app.exec_()
+    try:
+        qasync.run(main())
+    except asyncio.exceptions.CancelledError:
+        sys.exit(0)

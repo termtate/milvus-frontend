@@ -1,51 +1,71 @@
-from typing import Any, Literal
-import httpx  # 或者可以使用requests
-from network.model import Patient, PatientList, PatientQueryFields, AnnSearchParams, ModifyResponse
+from typing import Any, Type, TypeVar, Callable, Coroutine, ParamSpec
+import httpx 
+from network.model import Patient, PatientQueryFields, AnnSearchParams, ModifyResponse
 # from pydantic import 
-import asyncio
-from pprint import pprint
 from typing_extensions import Unpack
+import functools
+from pydantic import TypeAdapter
+from collections.abc import Coroutine
 
 url = "http://127.0.0.1:8000/api/v1/patients"
 
-client = httpx.Client(timeout=20)
 
-def _get(url: str, params=None) -> list[Patient]:
-    res = client.get(url, params=params, follow_redirects=True) # 需要加follow_redirects允许重定向
-    return PatientList.model_validate_json(res.content).root
+T = TypeVar("T")
+P = ParamSpec("P")
 
-def _post(url: str, json=None) -> ModifyResponse:
-    r = client.post(url, json=json, follow_redirects=True, headers={"Content-Type": "application/json; charset=utf-8"})
-    print(r.text)
-    return ModifyResponse.model_validate_json(
-        r.content
-    )
+def _serializer(
+    model: Type[T]
+) -> Callable[[Callable[P, Coroutine[Any, Any, httpx.Response]]], Callable[P, Coroutine[Any, Any, T]]]:
+    def inner(func: Callable[P, Coroutine[Any, Any, httpx.Response]]):
+        @functools.wraps(func)
+        async def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
+            
+            return TypeAdapter(model).validate_json((await func(*args, **kwargs)).content)
+        return wrapper
+    return inner
+
+
+class Client:
+    def __init__(self):
+        self._client = httpx.AsyncClient(timeout=20, follow_redirects=True)
     
-
-
-def get_patients_by_id(id: int):
-    return _get(f"{url}/{id}")
-
-def get_patients_by_fields(
-    **fields: Unpack[PatientQueryFields],
-):
-    return _get(url, params=fields)
-
-def get_patients_by_ann_search(query: str, field: str, **params: Unpack[AnnSearchParams]):
-    config = dict(params)
-    config["query"] = query
-    config["field"] = field
-    return _get(f"{url}/ann_search", params=config)
-
-
-def delete_patients(*patients_id: int):
-    return _post(f"{url}/batch", patients_id)
-
-def delete_all():
-    return ModifyResponse.model_validate_json(client.delete(f"{url}/").content)
-
-def create_patients(*patients: Patient):
-    return _post(url, [p.model_dump() for p in patients])
-
-def update_patient(id: int, field_name: str, value: Any):
-    return client.put(f"{url}/{id}", params={"field_name": field_name, "value": value})
+    
+    @_serializer(list[Patient])
+    async def get_patients_by_id(self, id: int):
+        return await self._client.get(f"{url}/{id}")
+    
+    @_serializer(list[Patient])
+    async def get_patients_by_fields(self, **fields: Unpack[PatientQueryFields],):
+        return await self._client.get(url, params=fields) # type: ignore
+    
+    @_serializer(list[Patient])
+    async def get_patients_by_ann_search(
+        self, 
+        query: str, 
+        field: str, 
+        **params: Unpack[AnnSearchParams]
+    ):
+        config = dict(params)
+        config["query"] = query
+        config["field"] = field
+        return await self._client.get(f"{url}/ann_search", params=config) # type: ignore
+    
+    @_serializer(ModifyResponse)
+    async def delete_patients(self, *patients_id: int):
+        return await self._client.post(f"{url}/batch", json=patients_id)
+    
+    @_serializer(ModifyResponse)
+    async def delete_all_patients(self):
+        return await self._client.delete(url)
+    
+    @_serializer(ModifyResponse)
+    async def create_patients(self, *patients: Patient):
+        return await self._client.post(url, json=[p.model_dump() for p in patients])
+    
+    @_serializer(ModifyResponse)
+    async def update_patient(self, id: int, field_name: str, value: Any):
+        return await self._client.put(f"{url}/{id}", params={"field_name": field_name, "value": value})
+    
+    async def close(self):
+        return await self._client.aclose()
+        
