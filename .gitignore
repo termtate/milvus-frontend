@@ -15,4 +15,4 @@ wheels/
 
 # test
 test*/
-test*.py
+# test*.py
