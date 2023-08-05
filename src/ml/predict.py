@@ -33,10 +33,10 @@ def output_labels(text):
     # print()
     labels = label_list()
     # print(labels)
-    output = read_info(text)
+    output = [list(i) for i in read_info(text)]
     # pprint(labels)
-    for l in labels:
-        output.append([l, ''])
+    output.extend([l, ''] for l in labels)
+    
     for i, label_name in enumerate(labels, start=20):
         for per in info:
             if isinstance(per, list) and per[0] == label_name:

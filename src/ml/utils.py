@@ -1,7 +1,8 @@
 import re
+from typing import Callable, Literal
 import torch
 from torch.utils import data
-
+from LAC import LAC
 import pandas as pd
 from seqeval.metrics import classification_report
 from ml.config import settings
@@ -106,58 +107,85 @@ def label_list():
 
 
 
+def recognize_attribute(text: str, pattern: Literal["姓名", "年龄", "性别"], cut_len: int = 8):
+    '''
+    :param text:
+    :param pattern:需要识别的类型
+    :param cut_len: 冒号后截取一定长度
+    :return: str
+    '''
+    rec_pattern: dict[str, list[str]] = {
+        "姓名": ["PER"],
+        "年龄": ["m","TIME"],
+        "性别": ["a"]
+    }
+    # rec_pattern={
+    #     "name":["姓名",["PER"]],
+    #     "age":["年龄",["m","TIME"]],
+    #     "gender":["性别",["a"]]
+    # }
+
+    assert pattern in rec_pattern
+
+    attribute = pattern
+    _label_list = rec_pattern[pattern]
+    pos = (
+        text.find(f"{attribute}：")
+        if f"{attribute}：" in text
+        else text.find(f"{attribute}:")
+    )
+    if attribute == "性别":
+        return text[pos + 3: pos + 4]
+    _text=text[pos+3:pos+3+cut_len]                     #冒号后截取cut_len位
+    lac=LAC(mode="lac")                                 #加载模型
+    result=lac.run(_text)                               #result[0]为分词list，[1]为标签list
+    ans = [
+        ((result[0][idx]).split())[0]
+        for idx, label in enumerate(result[1])
+        if label in _label_list
+    ]
+    # print(name[0])
+    return "".join(ans) if ans else _text
+
 # 读取姓名年龄等
 def read_info(text):
-    # print(text)
-    text = text.replace(' ', '')
-    pat0 = re.compile(r'入院记录\(.*?\)|入院记录（.*?）|第\(.*?\)次入院记录|第(.*?)次入院记录', re.I)
-    pat1 = re.compile(r'姓名[：:].*病室', re.I)
-    pat2 = re.compile(r'住院号[：:]\d*', re.I)
-    pat3 = re.compile(r'性别[：:].*民族', re.I)
-    pat4 = re.compile(r'年龄[：:].*住址', re.I)
-    pat5 = re.compile(r'电话[：:]\d*', re.I)
-    pat6 = re.compile(r'表现为.*?[。；;.]', re.I)
-    pat7 = re.compile(r'大约持续\d*秒|大约持续\d*分钟', re.I)
-    pat8 = re.compile(r'每年发作\d*次|每月发作\d*次|每周发作\d*次|每日发作\d*次', re.I)
-    pat9 = re.compile(r'其母怀孕时\d*岁|母孕时\d*岁', re.I)
-    pat10 = re.compile(r'G\d*P\d*', re.I)
-    pat11 = re.compile(r'出生体重\d*kg|出生体重\d*公斤', re.I)
-    pat12 = re.compile(r'头围\d*cm', re.I)
-    pat13 = re.compile(r'血、尿代谢筛查正常|血、尿代谢筛查.*?[,，.。；;]', re.I)
-    pat14 = re.compile(r'铜兰蛋白正常|铜兰蛋白.*?[,，.。；;]', re.I)
-    pat15 = re.compile(r'脑脊液.*?[,，.。；;]', re.I)
-    pat16 = re.compile(r'基因检查.*?[.。；;]', re.I)
-    pat17 = re.compile(r'头部CT.*?[.。；;]', re.I)
-    pat18 = re.compile(r'头部MRI.*?[.。；;]', re.I)
-    pat19 = re.compile(r'脑电图.*?[.。；;]|EEG.*?[.。；;]', re.I)
+    def re_search(pattern: str) -> Callable[[str], str]:
+        p = re.compile(pattern, re.I)
+        def inner(s: str):
+            res = p.search(s)
+            return "" if res is None else res[0]
 
-    op = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
-    for m in range(20):
-        string = f'pat{str(m)}'
-        temp = eval(string)
-        op[m] = '' if temp.search(text) is None else temp.search(text).group(0)
-    return [
-        ['第几次住院', op[0]],
-        ['姓名', op[1][3:-2]],
-        ['病案号', op[2][4:]],
-        ['性别', op[3][3:-2]],
-        ['年龄', op[4][3:-2]],
-        ['电话', op[5][3:]],
-        ['发作演变过程', op[6]],
-        ['发作持续时间', op[7]],
-        ['发作频次', op[8]],
-        ['母孕年龄', op[9]],
-        ['孕次产出', op[10]],
-        ['出生体重', op[11]],
-        ['头围', op[12]],
-        ['血、尿代谢筛查', op[13]],
-        ['铜兰蛋白', op[14]],
-        ['脑脊液', op[15]],
-        ['基因检查', op[16]],
-        ['头部CT', op[17]],
-        ['头部MRI', op[18]],
-        ['头皮脑电图', op[19]],
-    ]
+        return inner
+
+    field_recognize_map: dict[str, Callable[[str], str]] = {
+        "第几次住院": re_search(r'入院记录\(.*?\)|入院记录（.*?）|第\(.*?\)次入院记录|第(.*?)次入院记录'),
+        '姓名': lambda text: recognize_attribute(text, pattern="姓名"),
+        '病案号': lambda text: re_search(r'住院号[：:]\d*')(text)[4:],
+        '性别': lambda text: recognize_attribute(text, pattern="性别"),
+        '年龄': lambda text: recognize_attribute(text, pattern="年龄"),
+        '电话': lambda text: re_search(r'电话[：:]\d*')(text)[3:],
+        '发作演变过程': re_search(r'表现为.*?[。；;.]'),
+        '发作持续时间': re_search(r'大约持续\d*秒|大约持续\d*分钟'),
+        '发作频次': re_search(r'每年发作\d*次|每月发作\d*次|每周发作\d*次|每日发作\d*次'),
+        '母孕年龄': re_search(r'其母怀孕时\d*岁|母孕时\d*岁'),
+        '孕次产出': re_search(r'G\d*P\d*'),
+        '出生体重': re_search(r'出生体重\d*kg|出生体重\d*公斤'),
+        '头围': re_search(r'头围\d*cm'),
+        '血、尿代谢筛查': re_search(r'血、尿代谢筛查正常|血、尿代谢筛查.*?[,，.。；;]'),
+        '铜兰蛋白': re_search(r'铜兰蛋白正常|铜兰蛋白.*?[,，.。；;]'),
+        '脑脊液': re_search(r'脑脊液.*?[,，.。；;]'),
+        '基因检查': re_search(r'基因检查.*?[.。；;]'), 
+        '头部CT': re_search(r'头部CT.*?[.。；;]'), 
+        '头部MRI': re_search(r'头部MRI.*?[.。；;]'), 
+        '头皮脑电图': re_search(r'脑电图.*?[.。；;]|EEG.*?[.。；;]'),
+    }
+    
+    res: list[tuple[str, str]] = []
+    
+    for field, search_func in field_recognize_map.items():
+        res.append((field, search_func(text)))
+    
+    return res
 
 
 
