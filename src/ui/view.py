@@ -11,6 +11,7 @@ from config import settings
 from ui.viewmodel import State, ViewModel
 from assets.main_ui import Ui_MainWindow
 from qasync import asyncSlot, run
+from qt_material import QtStyleTools
 
 
 class TestWin(QMainWindow):
@@ -18,7 +19,11 @@ class TestWin(QMainWindow):
     def __init__(self, viewmodel: ViewModel):
         super().__init__()
         self.ui = Ui_MainWindow()
+        # self.set_extra(settings.THEME_EXTRA)
         self.ui.setupUi(self)
+        
+        
+        self.ui.delete_selected_button.setProperty('class', 'success')
 
         self.path = ''
         self.file_name = ""
@@ -71,6 +76,7 @@ class TestWin(QMainWindow):
         self.ui.delete_selected_button_2.clicked.connect(self.delete_selected)
         self.ui.delete_all_button.clicked.connect(self.delete_all)
         self.ui.delete_all_button_2.clicked.connect(self.delete_all)
+        
         # self.ui.pushButton_2.clicked.connect(self.presenter.delete_all_patients)
         # self.ui.setWindowTitle('病历查询')
         # cnames = ['ID', "身份证号", '第几次住院', '姓名', '病案号', '性别', '年龄', '电话', '发作演变过程']
@@ -78,11 +84,6 @@ class TestWin(QMainWindow):
         self.ui.table.setHorizontalHeaderLabels(settings.TABLE_COLUMNS)
         self._refreshing = False
         # self.list = []
-    
-    async def a(self):
-        await asyncio.sleep(2)
-        self.ui.delete_selected_button.setText("OK!")
-        
     
     def observe(self, state: State):
         self.ui.table.setEnabled(not state.is_loading)
@@ -100,7 +101,6 @@ class TestWin(QMainWindow):
                 self.show_patients_on_table(table_data)
                 self.ui.numlabel1.setText(f'搜索结果：{len(table_data)}人')
                 
-    
     
     def show_critical_message(self, msg: str):
         QMessageBox.critical(

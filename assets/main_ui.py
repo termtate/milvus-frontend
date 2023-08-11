@@ -15,11 +15,12 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QGroupBox, QHBoxLayout,
-    QHeaderView, QLabel, QLineEdit, QMainWindow,
-    QMenuBar, QPlainTextEdit, QPushButton, QSizePolicy,
-    QSpacerItem, QStackedWidget, QStatusBar, QTabWidget,
-    QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QGroupBox,
+    QHBoxLayout, QHeaderView, QLabel, QLineEdit,
+    QMainWindow, QMenuBar, QPlainTextEdit, QPushButton,
+    QSizePolicy, QSpacerItem, QStackedWidget, QStatusBar,
+    QTabWidget, QTableWidget, QTableWidgetItem, QVBoxLayout,
+    QWidget)
 import assets.qrc1_rc
 
 class Ui_MainWindow(object):
@@ -522,6 +523,25 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setSpacing(7)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(11, 0, 11, 0)
+        self.horizontalLayout_7 = QHBoxLayout()
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.checkBox = QCheckBox(self.groupBox_3)
+        self.checkBox.setObjectName(u"checkBox")
+
+        self.horizontalLayout_7.addWidget(self.checkBox)
+
+        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_7.addItem(self.horizontalSpacer_6)
+
+        self.db = QPushButton(self.groupBox_3)
+        self.db.setObjectName(u"db")
+
+        self.horizontalLayout_7.addWidget(self.db)
+
+
+        self.verticalLayout_2.addLayout(self.horizontalLayout_7)
+
         self.loading_label = QLabel(self.groupBox_3)
         self.loading_label.setObjectName(u"loading_label")
         self.loading_label.setEnabled(True)
@@ -619,7 +639,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         self.tabWidget.setCurrentIndex(0)
-        self.stacks.setCurrentIndex(1)
+        self.stacks.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -681,6 +701,9 @@ class Ui_MainWindow(object):
         self.delete_selected_button_2.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664\u9009\u4e2d", None))
         self.delete_all_button_2.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664\u5168\u90e8", None))
         self.groupBox_3.setTitle("")
+        self.checkBox.setText(QCoreApplication.translate("MainWindow", u"\u5168\u9009", None))
+        self.db.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664\u9009\u4e2d", None))
+        self.db.setProperty("class", "danger")
         self.loading_label.setText(QCoreApplication.translate("MainWindow", u"\u52a0\u8f7d\u4e2d", None))
         ___qtablewidgetitem = self.table.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"\u59d3\u540d", None));

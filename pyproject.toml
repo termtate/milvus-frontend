@@ -30,6 +30,7 @@ dependencies = [
     "paddlepaddle~=2.5.0",
     "setuptools>=68.0.0",
     "lac>=2.1.2",
+    "nuitka>=1.7.9",
 ]
 readme = "README.md"
 requires-python = ">= 3.10"

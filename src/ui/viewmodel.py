@@ -1,9 +1,12 @@
+import asyncio
 from functools import wraps
+from pprint import pprint
 from typing import Any, Sequence
 from typing_extensions import Unpack, TypedDict
+import pandas as pd
 from pydantic import BaseModel, TypeAdapter
 from ml.recognize import Recognizer
-from network.model import Patient
+from network.model import Patient, PatientCreate
 from reactivex.subject import BehaviorSubject
 from qasync import asyncSlot, asyncClose
 from injector import inject
@@ -18,7 +21,7 @@ class State(BaseModel):
     table_data: Sequence[Patient]
 
 
-class StateDict(TypedDict, total=False):
+class StateDict(TypedDict, total=False):  # for type checking
     is_loading: bool
     error_message: str | None
     
@@ -64,7 +67,7 @@ class ViewModel:
         if not text:
             self._update(error_message='输入不能为空！')
             return
-        patients = await self.client.get_patients_by_id(int(text))
+        patients = await self.client.get_patients_by_fields(field="name", value=text)
         self._update(table_data=patients)
         
     @asyncSlot()
@@ -77,7 +80,7 @@ class ViewModel:
             query=query,
             field=settings.COLUMNS_NAME_MAP[field]
         )
-        self._update(table_data=patients)
+        self._update(table_data=patients.data)
     
     @asyncSlot()
     @with_loading_state
@@ -95,10 +98,21 @@ class ViewModel:
     @asyncSlot()
     @with_loading_state
     async def upload_file(self, path: str):
-        # TODO
-        pass
-        # print(path)
-        # self.recognizer.read_files2(path)
+        await asyncio.to_thread(self.recognizer.read_files2, path)
+        res = self.recognizer.read_files2(path)
+        patients = []
+        for i in res:
+            i["身份证号"] = ""
+
+            trans = {settings.COLUMNS_NAME_MAP[k]: v for k, v in i.items()}
+            patients.append(trans)
+
+
+        await self.client.create_patients(*[
+            PatientCreate(**_) for _ in patients
+        ])
+        
+        # self._update()
     
     @asyncSlot()
     @with_loading_state
@@ -111,6 +125,18 @@ class ViewModel:
         ))
         
         self._update(table_data=items)
+
+    @asyncSlot()
+    @with_loading_state
+    async def export_to_excel(self, path: str, *ids: int):
+        selected = filter(
+            lambda x: x.id in ids,
+            self.state.value.table_data
+        )
+        
+        df = pd.DataFrame([_.model_dump() for _ in selected])
+        
+        df.to_excel(rf"{path}\output.xlsx")
         
     
     def on_error_dismiss(self):

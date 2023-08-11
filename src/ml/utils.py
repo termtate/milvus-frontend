@@ -107,7 +107,7 @@ def label_list():
 
 
 
-def recognize_attribute(text: str, pattern: Literal["姓名", "年龄", "性别"], cut_len: int = 8):
+def recognize_attribute(lac: LAC, text: str, pattern: Literal["姓名", "年龄", "性别"], cut_len: int = 8):
     '''
     :param text:
     :param pattern:需要识别的类型
@@ -137,7 +137,7 @@ def recognize_attribute(text: str, pattern: Literal["姓名", "年龄", "性别"
     if attribute == "性别":
         return text[pos + 3: pos + 4]
     _text=text[pos+3:pos+3+cut_len]                     #冒号后截取cut_len位
-    lac=LAC(mode="lac")                                 #加载模型
+                              #加载模型
     result=lac.run(_text)                               #result[0]为分词list，[1]为标签list
     ans = [
         ((result[0][idx]).split())[0]
@@ -148,8 +148,8 @@ def recognize_attribute(text: str, pattern: Literal["姓名", "年龄", "性别"
     return "".join(ans) if ans else _text
 
 # 读取姓名年龄等
-def read_info(text):
-    def re_search(pattern: str) -> Callable[[str], str]:
+def read_info(lac: LAC, text: str):
+    def re_match(pattern: str) -> Callable[[str], str]:
         p = re.compile(pattern, re.I)
         def inner(s: str):
             res = p.search(s)
@@ -158,26 +158,26 @@ def read_info(text):
         return inner
 
     field_recognize_map: dict[str, Callable[[str], str]] = {
-        "第几次住院": re_search(r'入院记录\(.*?\)|入院记录（.*?）|第\(.*?\)次入院记录|第(.*?)次入院记录'),
-        '姓名': lambda text: recognize_attribute(text, pattern="姓名"),
-        '病案号': lambda text: re_search(r'住院号[：:]\d*')(text)[4:],
-        '性别': lambda text: recognize_attribute(text, pattern="性别"),
-        '年龄': lambda text: recognize_attribute(text, pattern="年龄"),
-        '电话': lambda text: re_search(r'电话[：:]\d*')(text)[3:],
-        '发作演变过程': re_search(r'表现为.*?[。；;.]'),
-        '发作持续时间': re_search(r'大约持续\d*秒|大约持续\d*分钟'),
-        '发作频次': re_search(r'每年发作\d*次|每月发作\d*次|每周发作\d*次|每日发作\d*次'),
-        '母孕年龄': re_search(r'其母怀孕时\d*岁|母孕时\d*岁'),
-        '孕次产出': re_search(r'G\d*P\d*'),
-        '出生体重': re_search(r'出生体重\d*kg|出生体重\d*公斤'),
-        '头围': re_search(r'头围\d*cm'),
-        '血、尿代谢筛查': re_search(r'血、尿代谢筛查正常|血、尿代谢筛查.*?[,，.。；;]'),
-        '铜兰蛋白': re_search(r'铜兰蛋白正常|铜兰蛋白.*?[,，.。；;]'),
-        '脑脊液': re_search(r'脑脊液.*?[,，.。；;]'),
-        '基因检查': re_search(r'基因检查.*?[.。；;]'), 
-        '头部CT': re_search(r'头部CT.*?[.。；;]'), 
-        '头部MRI': re_search(r'头部MRI.*?[.。；;]'), 
-        '头皮脑电图': re_search(r'脑电图.*?[.。；;]|EEG.*?[.。；;]'),
+        "第几次住院": re_match(r'入院记录\(.*?\)|入院记录（.*?）|第\(.*?\)次入院记录|第(.*?)次入院记录'),
+        '姓名': lambda text: recognize_attribute(lac, text, pattern="姓名"),
+        '病案号': lambda text: re_match(r'住院号[：:]\d*')(text)[4:],
+        '性别': lambda text: recognize_attribute(lac, text, pattern="性别"),
+        '年龄': lambda text: recognize_attribute(lac, text, pattern="年龄"),
+        '电话': lambda text: re_match(r'电话[：:]\d*')(text)[3:],
+        '发作演变过程': re_match(r'表现为.*?[。；;.]'),
+        '发作持续时间': re_match(r'大约持续\d*秒|大约持续\d*分钟'),
+        '发作频次': re_match(r'每年发作\d*次|每月发作\d*次|每周发作\d*次|每日发作\d*次'),
+        '母孕年龄': re_match(r'其母怀孕时\d*岁|母孕时\d*岁'),
+        '孕次产出': re_match(r'G\d*P\d*'),
+        '出生体重': re_match(r'出生体重\d*kg|出生体重\d*公斤'),
+        '头围': re_match(r'头围\d*cm'),
+        '血、尿代谢筛查': re_match(r'血、尿代谢筛查正常|血、尿代谢筛查.*?[,，.。；;]'),
+        '铜兰蛋白': re_match(r'铜兰蛋白正常|铜兰蛋白.*?[,，.。；;]'),
+        '脑脊液': re_match(r'脑脊液.*?[,，.。；;]'),
+        '基因检查': re_match(r'基因检查.*?[.。；;]'), 
+        '头部CT': re_match(r'头部CT.*?[.。；;]'), 
+        '头部MRI': re_match(r'头部MRI.*?[.。；;]'), 
+        '头皮脑电图': re_match(r'脑电图.*?[.。；;]|EEG.*?[.。；;]'),
     }
     
     res: list[tuple[str, str]] = []

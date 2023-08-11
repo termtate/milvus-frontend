@@ -6,8 +6,9 @@ class Settings(BaseSettings):
     COLUMNS_NAME_MAP: dict[str, str] = {
         "ID": "id",
         "身份证号": "id_card_number",
-        "姓名": "name",
+        
         "第几次住院": "hospitalize_num",
+        "姓名": "name",
         "病案号": "case_number",
         "性别": "sex",
         "年龄": "age",
@@ -27,9 +28,79 @@ class Settings(BaseSettings):
         "头部MRI": "head_mri",
         "头皮脑电图": "scalp_eeg",
         "诱发因素": "precipitating_factor",
+        "儿童期起病": "childhood_onset",
+        "抗癫痫药物": "aed",
+        "癫痫外科": "epilepsy_surgery",
+        "简单感觉发作": "simple_sensory_seizure",
+        "父母是否有过热性惊厥": "is_parent_febrile_convulsion",
+        "孕期疾病": "pregnancy_diseases",
+        "婴儿期起病": "infancy_onset",
+        "运动型": "motor_seizure",
+        "遗传代谢疾病": "metabolic_disorders",
+        "发作后表现": "postictal_manifestation",
+        "症状性癫痫": "symptomatic_epilepsy",
+        "有手术史": "have_surgery_history",
+        "自动症": "automatism",
+        "全面性运动性发作": "generalized_motor_seizures",
+        "色素沉积": "pigmentation",
+        "局灶运动性发作": "local_motor_seizures",
+        "自主神经": "autonomic_nerves",
+        "认知": "cognition",
+        "其他癫痫综合征": "other_epilepsy_syndrome",
+        "电解质": "electrolyte",
+        "新生儿期起病": "neonatal_onset",
+        "预防接种史": "vaccination_history",
+        "亲属是否有癫痫病人": "is_relatives_have_epilepsy",
+        "血乳酸": "lactate",
+        "生长发育里程碑": "growth_milestone",
+        "生长发育史迟缓": "growth_retardation",
+        "青少年_成年期起病": "adolescent_adult_onset",
+        "发育迟缓": "stunting",
+        "血氨": "blood_ammonia",
+        "全面性非运动性发作": "generalized_non_motor_seizures",
+        "求学困难": "learning_difficulties",
+        "局灶非运动发作": "focal_non_motor_seizures",
+        "被过度保护": "overprotected",
+        "有无热性惊厥史": "has_febrile_seizures_history",
+        "有无新生儿惊厥": "has_neonatal_convulsion",
+        "注意缺陷多动障碍": "adhd",
+        "是否有重度黄疸": "has_severe_jaundice",
+        "喂养困难": "feeding_difficulties",
+        "情绪或情感": "emotion_or_feeling",
+        "与年龄无特殊关系的癫痫综合征": "epilepsy_syndromes_no_specifically_related_to_age",
+        "生酮饮食": "ketogenic_diet",
+        "羊水污染": "stained_amniotic_fluid",
+        "输血史": "blood_transfusion_history",
+        "外伤史": "trauma_history",
+        "局灶性继发双侧强直_阵挛发作": "focal_secondary_bilateral_tonic_clonic_seizures",
+        "父母是否近亲结婚": "is_parents_consanguineous_married",
+        "跌倒": "fall",
+        "是否有出生窒息": "has_birth_asphyxia",
+        "惊厥史": "convulsion_history",
+        "生长发育倒退": "growth_regression",
+        "心理压力大": "high_psychological_pressure",
+        "呕吐": "vomit",
+        "伴发热": "accompanying_fever",
+        "分娩方式": "delivery_mode",
+        "腹泻": "diarrhea",
+        "抽动症": "tic",
+        "自闭症": "autism"
     }
     
     TABLE_COLUMNS: tuple[str, ...] = tuple(COLUMNS_NAME_MAP.keys())
+    
+    THEME_EXTRA: dict[str, str] = {
+        # Button colors
+        'danger': '#dc3545',
+        'warning': '#ffc107',
+        'success': '#17a2b8',
+        # Font
+        # 'font_family': 'Roboto',
+        # Density
+        # 'density_scale': '0',
+        # Button Shape
+        # 'button_shape': 'default',
+    }
 
 
 settings = Settings()

@@ -2,14 +2,15 @@ from ml.config import settings
 from ml.utils import get_label, get_vocab, extract, label_list, read_info
 from pprint import pprint
 import torch
+from LAC import LAC
 
-def read_generated_txt(path: str):
+def read_generated_txt(lac: LAC, path: str):
     with open(path, "r", encoding="UTF-8") as f:
         text = f.read()
-        output_labels(text)
+        return output_labels(lac, text)
             
     # 输出标签
-def output_labels(text):
+def output_labels(lac: LAC, text):
     _, word2id = get_vocab()
     input_ = torch.tensor([[word2id.get(w, settings.WORD_UNK_ID) for w in text]]).to(settings.DEVICE)
     mask = torch.tensor([[1] * len(text)]).bool().to(settings.DEVICE)
@@ -33,7 +34,7 @@ def output_labels(text):
     # print()
     labels = label_list()
     # print(labels)
-    output = [list(i) for i in read_info(text)]
+    output = [list(i) for i in read_info(lac, text)]
     # pprint(labels)
     output.extend([l, ''] for l in labels)
     
@@ -43,21 +44,22 @@ def output_labels(text):
                 if output[i][1] != '':
                     output[i][1] += '，'
                 output[i][1] += per[1]
-    pprint(dict(output))
+    
+    return dict(output)
 
-    sqlstr = list(map(str, labels))
-    sqlstr = ','.join(sqlstr)
-    sqlstr = f'第几次住院,姓名,病案号,性别,年龄,电话,发作演变过程,发作持续时间,发作频次,母孕年龄,孕次产出,出生体重,头围,血、尿代谢筛查,铜兰蛋白,脑脊液,基因检查,头部CT,头部MRI,头皮脑电图,{sqlstr}'
-    # print(sqlstr)
+    # sqlstr = list(map(str, labels))
+    # sqlstr = ','.join(sqlstr)
+    # sqlstr = f'第几次住院,姓名,病案号,性别,年龄,电话,发作演变过程,发作持续时间,发作频次,母孕年龄,孕次产出,出生体重,头围,血、尿代谢筛查,铜兰蛋白,脑脊液,基因检查,头部CT,头部MRI,头皮脑电图,{sqlstr}'
+    # # print(sqlstr)
 
-    aaa = ''
-    for i in range(78):
-        if i != 0:
-            aaa += ','
-        aaa += '%s'
+    # aaa = ''
+    # for i in range(78):
+    #     if i != 0:
+    #         aaa += ','
+    #     aaa += '%s'
 
-    sql = f'INSERT INTO TABLE1({sqlstr}) VALUE ({aaa})'
-    value = [v[1] for v in output if isinstance(v, list)]
-    value = tuple(value)
-    # pprint(sql)
-    # pprint(value)
+    # sql = f'INSERT INTO TABLE1({sqlstr}) VALUE ({aaa})'
+    # value = [v[1] for v in output if isinstance(v, list)]
+    # value = tuple(value)
+    # # pprint(sql)
+    # # pprint(value)

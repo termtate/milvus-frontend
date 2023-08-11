@@ -1,6 +1,6 @@
 from typing import Any, Type, TypeVar, Callable, Coroutine, ParamSpec
 import httpx 
-from network.model import Patient, PatientQueryFields, AnnSearchParams, ModifyResponse
+from network.model import Patient, AnnSearchParams, ModifyResponse, PatientCreate, AnnSearchResult
 # from pydantic import 
 from typing_extensions import Unpack
 import functools
@@ -27,7 +27,7 @@ def _serializer(
 
 class Client:
     def __init__(self):
-        self._client = httpx.AsyncClient(timeout=20, follow_redirects=True)
+        self._client = httpx.AsyncClient(timeout=60, follow_redirects=True)
     
     
     @_serializer(list[Patient])
@@ -35,10 +35,10 @@ class Client:
         return await self._client.get(f"{url}/{id}")
     
     @_serializer(list[Patient])
-    async def get_patients_by_fields(self, **fields: Unpack[PatientQueryFields],):
-        return await self._client.get(url, params=fields) # type: ignore
+    async def get_patients_by_fields(self, field: str, value: Any):
+        return await self._client.get(url, params={"field": field, "value": value}) 
     
-    @_serializer(list[Patient])
+    @_serializer(AnnSearchResult)
     async def get_patients_by_ann_search(
         self, 
         query: str, 
@@ -54,12 +54,12 @@ class Client:
     async def delete_patients(self, *patients_id: int):
         return await self._client.post(f"{url}/batch", json=patients_id)
     
-    @_serializer(ModifyResponse)
-    async def delete_all_patients(self):
-        return await self._client.delete(url)
+    # @_serializer(ModifyResponse)
+    # async def delete_all_patients(self):
+    #     return await self._client.delete(url)
     
     @_serializer(ModifyResponse)
-    async def create_patients(self, *patients: Patient):
+    async def create_patients(self, *patients: PatientCreate):
         return await self._client.post(url, json=[p.model_dump() for p in patients])
     
     @_serializer(ModifyResponse)
