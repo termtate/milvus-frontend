@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     
-    ANN_SEARCH_FIELDS: tuple[str, ...] = ("发作演变过程", ) # TODO 
+    ANN_SEARCH_FIELDS: tuple[str, ...] = ("发作演变过程", "诱发因素", "情绪或情感")
     COLUMNS_NAME_MAP: dict[str, str] = {
         "ID": "id",
         "身份证号": "id_card_number",

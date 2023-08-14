@@ -312,7 +312,7 @@
                   </layout>
                  </item>
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,25,5">
+                  <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,25">
                    <property name="spacing">
                     <number>0</number>
                    </property>
@@ -339,24 +339,6 @@
                      </property>
                      <property name="text">
                       <string>普通搜索：根据病案号或姓名来搜索</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="numlabel1">
-                     <property name="layoutDirection">
-                      <enum>Qt::LeftToRight</enum>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">*{
-	color:rgb(118, 118, 118)
-}</string>
-                     </property>
-                     <property name="text">
-                      <string>搜索结果：0人</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -408,24 +390,10 @@
                    </property>
                   </spacer>
                  </item>
-                 <item>
-                  <widget class="QPushButton" name="delete_selected_button">
-                   <property name="text">
-                    <string>删除选中</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="delete_all_button">
-                   <property name="text">
-                    <string>全部删除</string>
-                   </property>
-                  </widget>
-                 </item>
                 </layout>
                </widget>
                <widget class="QWidget" name="page_2">
-                <layout class="QVBoxLayout" name="verticalLayout_9" stretch="2,3,2,1,1,0,0">
+                <layout class="QVBoxLayout" name="verticalLayout_9" stretch="2,3,2,1,1">
                  <property name="spacing">
                   <number>5</number>
                  </property>
@@ -710,7 +678,7 @@
                   </layout>
                  </item>
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="1,25,5">
+                  <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="1,25">
                    <property name="spacing">
                     <number>0</number>
                    </property>
@@ -737,24 +705,6 @@
                      </property>
                      <property name="text">
                       <string>普通搜索：根据病案号或姓名来搜索</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="numlabel1_2">
-                     <property name="layoutDirection">
-                      <enum>Qt::LeftToRight</enum>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">*{
-	color:rgb(118, 118, 118)
-}</string>
-                     </property>
-                     <property name="text">
-                      <string>搜索结果：0人</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -793,20 +743,6 @@
                    </item>
                   </layout>
                  </item>
-                 <item>
-                  <widget class="QPushButton" name="delete_selected_button_2">
-                   <property name="text">
-                    <string>删除选中</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="delete_all_button_2">
-                   <property name="text">
-                    <string>删除全部</string>
-                   </property>
-                  </widget>
-                 </item>
                 </layout>
                </widget>
               </widget>
@@ -834,7 +770,7 @@
           <property name="title">
            <string/>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0">
+          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0">
            <property name="spacing">
             <number>7</number>
            </property>
@@ -851,9 +787,27 @@
             <number>0</number>
            </property>
            <item>
+            <widget class="QLabel" name="numlabel1_2">
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">*{
+	color:rgb(118, 118, 118)
+}</string>
+             </property>
+             <property name="text">
+              <string>搜索结果：0人</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_7">
              <item>
-              <widget class="QCheckBox" name="checkBox">
+              <widget class="QCheckBox" name="select_all">
                <property name="text">
                 <string>全选</string>
                </property>
@@ -873,12 +827,19 @@
               </spacer>
              </item>
              <item>
-              <widget class="QPushButton" name="db">
+              <widget class="QPushButton" name="export_selected">
+               <property name="text">
+                <string>导出选中</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="delete_selected">
                <property name="text">
                 <string>删除选中</string>
                </property>
                <property name="class" stdset="0">
-                <string>danger</string>
+                <string notr="true">danger</string>
                </property>
               </widget>
              </item>

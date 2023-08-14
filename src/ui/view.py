@@ -1,9 +1,10 @@
 import asyncio
 from typing import Any
 from PySide6 import QtWidgets
+from PySide6.QtCore import QItemSelectionModel, QModelIndex
 from PySide6.QtWidgets import QTableWidgetItem, QCheckBox
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtWidgets import QMessageBox, QFileDialog, QListWidgetItem, QMainWindow
+from PySide6.QtWidgets import QMessageBox, QFileDialog, QListWidgetItem, QMainWindow, QAbstractItemView
 from injector import inject
 from network.model import Patient
 from typing import Sequence
@@ -21,19 +22,19 @@ class TestWin(QMainWindow):
         self.ui = Ui_MainWindow()
         # self.set_extra(settings.THEME_EXTRA)
         self.ui.setupUi(self)
-        
-        
-        self.ui.delete_selected_button.setProperty('class', 'success')
 
         self.path = ''
         self.file_name = ""
         # self.search_state=0
-
+        self.table_data_checkboxes: list[QCheckBox] = []
+        
         self.viewmodel = viewmodel
         self.state = self.viewmodel.state
         self.state.subscribe(
             on_next=self.observe
         )
+        
+        
 
         self.ui.searchButton.clicked.connect(
             lambda: self.viewmodel.common_search(self.ui.searchtext1.text())
@@ -56,7 +57,6 @@ class TestWin(QMainWindow):
                 self.ui.plainTextEdit.appendPlainText("请先选择文件夹路径！")
                 return
             res = self.viewmodel.upload_file(self.path)
-            self.ui.plainTextEdit.appendPlainText("导入成功！")
             self.path = ''
             return res
 
@@ -71,11 +71,26 @@ class TestWin(QMainWindow):
                 )
 
         self.ui.table.itemChanged.connect(update)
-        self.ui.delete_selected_button.clicked.connect(self.delete_selected)
-        # self.ui.delete_selected_button.clicked.connect(self.delete_selected)
-        self.ui.delete_selected_button_2.clicked.connect(self.delete_selected)
-        self.ui.delete_all_button.clicked.connect(self.delete_all)
-        self.ui.delete_all_button_2.clicked.connect(self.delete_all)
+        self.ui.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        m = QItemSelectionModel(self.ui.table.model())
+        
+        self.ui.table.setSelectionModel(m)
+        def select(current: QModelIndex, last: QModelIndex):
+            all_selected = all(m.isRowSelected(row) for row in range(self.ui.table.rowCount()))
+            
+            self.ui.select_all.setChecked(all_selected)
+
+        m.currentRowChanged.connect(select)
+        
+        def select_all(checked):
+            if checked:
+                self.ui.table.selectAll() 
+            else:
+                self.ui.table.clearSelection()
+        self.ui.select_all.toggled.connect(select_all)
+
+        self.ui.delete_selected.clicked.connect(self.delete_selected)
+
         
         # self.ui.pushButton_2.clicked.connect(self.presenter.delete_all_patients)
         # self.ui.setWindowTitle('病历查询')
@@ -84,6 +99,13 @@ class TestWin(QMainWindow):
         self.ui.table.setHorizontalHeaderLabels(settings.TABLE_COLUMNS)
         self._refreshing = False
         # self.list = []
+        
+        self.ui.export_selected.clicked.connect(self.export_selected_to_excel)
+        
+        self.ui.list1.setEnabled(False)
+        
+        self.ui.list2.clear()
+        self.ui.list2.addItems(settings.ANN_SEARCH_FIELDS)
     
     def observe(self, state: State):
         self.ui.table.setEnabled(not state.is_loading)
@@ -96,10 +118,15 @@ class TestWin(QMainWindow):
                 self.show_critical_message(msg)
                 self.viewmodel.on_error_dismiss()
                 
-            case State(table_data=table_data):
+            case State(table_data=table_data, upload_success=uploaded):
                 self.ui.table.setRowCount(0)
                 self.show_patients_on_table(table_data)
-                self.ui.numlabel1.setText(f'搜索结果：{len(table_data)}人')
+                self.ui.numlabel1_2.setText(f'搜索结果：{len(table_data)}人')
+                
+                if uploaded:
+                    self.ui.plainTextEdit.appendPlainText("导入成功！")
+                    self.viewmodel.uploaded_shown()
+                    
                 
     
     def show_critical_message(self, msg: str):
@@ -111,25 +138,35 @@ class TestWin(QMainWindow):
     
     def show_patients_on_table(self, data: Sequence[Patient]):
         self._refreshing = True
-        for i in range(len(data)):
-            self.ui.table.insertRow(i)
-            for index, value in enumerate(data[i].model_dump().values()):
-                self.ui.table.setItem(i, index, QTableWidgetItem(str(value)))
+        self.table_data_checkboxes.clear()
+        for row in range(len(data)):
+            self.ui.table.insertRow(row)
+            for column, value in enumerate(data[row].model_dump().values()):
+                self.ui.table.setItem(row, column, QTableWidgetItem(str(value)))
+        
+            checkbox = QCheckBox()
+            self.table_data_checkboxes.append(checkbox)
+            self.ui.table.setCellWidget(row, 0, checkbox)
+        
         
         self._refreshing = False
     
-    def delete_selected(self):
-        ids = {
+    def get_selected(self) -> set[int]:
+        return {
             int(self.ui.table.item(item.row(), 0).text()) for item in self.ui.table.selectedItems()
         }
-        return self.viewmodel.delete_patients(*ids)
     
-    def delete_all(self):
-        ids = [
-            int(self.ui.table.item(row, 0).text())
-            for row in range(self.ui.table.rowCount())
-        ]
-        return self.viewmodel.delete_patients(*ids)
+    def delete_selected(self):
+        ids = self.get_selected()
+        if len(ids) != 0:
+            return self.viewmodel.delete_patients(*ids)
+    
+    # def delete_all(self):
+    #     ids = [
+    #         int(self.ui.table.item(row, 0).text())
+    #         for row in range(self.ui.table.rowCount())
+    #     ]
+    #     return self.viewmodel.delete_patients(*ids)
         
 
     def display1(self):
@@ -142,12 +179,16 @@ class TestWin(QMainWindow):
 
     def getpath(self):      # 读取路径
         self.ui.plainTextEdit.clear()
-        filepath = QtWidgets.QFileDialog.getExistingDirectory(None, "请选择文件夹路径", "D:/")
+        filepath = QtWidgets.QFileDialog.getExistingDirectory(self, "请选择文件夹路径")
         self.path = filepath
         self.ui.plainTextEdit.appendPlainText(f"选择的路径为：{filepath}")
         self.ui.getpathbutton.toggle()
 
-
+    def export_selected_to_excel(self):
+        dir_path = QtWidgets.QFileDialog.getExistingDirectory(self, "请选择文件夹路径")
+        ids = self.get_selected()
+        if len(ids) != 0:
+            return self.viewmodel.export_to_excel(dir_path, *ids)
 
     def selectionchange1(self):     # 设置下拉框
         self.ui.list2.clear()

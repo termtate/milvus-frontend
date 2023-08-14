@@ -222,19 +222,8 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_4.addWidget(self.label_pt)
 
-        self.numlabel1 = QLabel(self.page)
-        self.numlabel1.setObjectName(u"numlabel1")
-        self.numlabel1.setLayoutDirection(Qt.LeftToRight)
-        self.numlabel1.setStyleSheet(u"*{\n"
-"	color:rgb(118, 118, 118)\n"
-"}")
-        self.numlabel1.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.horizontalLayout_4.addWidget(self.numlabel1)
-
         self.horizontalLayout_4.setStretch(0, 1)
         self.horizontalLayout_4.setStretch(1, 25)
-        self.horizontalLayout_4.setStretch(2, 5)
 
         self.verticalLayout_3.addLayout(self.horizontalLayout_4)
 
@@ -267,16 +256,6 @@ class Ui_MainWindow(object):
         self.verticalSpacer = QSpacerItem(20, 143, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout_3.addItem(self.verticalSpacer)
-
-        self.delete_selected_button = QPushButton(self.page)
-        self.delete_selected_button.setObjectName(u"delete_selected_button")
-
-        self.verticalLayout_3.addWidget(self.delete_selected_button)
-
-        self.delete_all_button = QPushButton(self.page)
-        self.delete_all_button.setObjectName(u"delete_all_button")
-
-        self.verticalLayout_3.addWidget(self.delete_all_button)
 
         self.stacks.addWidget(self.page)
         self.page_2 = QWidget()
@@ -443,19 +422,8 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_9.addWidget(self.label_pt_3)
 
-        self.numlabel1_2 = QLabel(self.page_2)
-        self.numlabel1_2.setObjectName(u"numlabel1_2")
-        self.numlabel1_2.setLayoutDirection(Qt.LeftToRight)
-        self.numlabel1_2.setStyleSheet(u"*{\n"
-"	color:rgb(118, 118, 118)\n"
-"}")
-        self.numlabel1_2.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.horizontalLayout_9.addWidget(self.numlabel1_2)
-
         self.horizontalLayout_9.setStretch(0, 1)
         self.horizontalLayout_9.setStretch(1, 25)
-        self.horizontalLayout_9.setStretch(2, 5)
 
         self.verticalLayout_9.addLayout(self.horizontalLayout_9)
 
@@ -485,16 +453,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_9.addLayout(self.horizontalLayout_10)
 
-        self.delete_selected_button_2 = QPushButton(self.page_2)
-        self.delete_selected_button_2.setObjectName(u"delete_selected_button_2")
-
-        self.verticalLayout_9.addWidget(self.delete_selected_button_2)
-
-        self.delete_all_button_2 = QPushButton(self.page_2)
-        self.delete_all_button_2.setObjectName(u"delete_all_button_2")
-
-        self.verticalLayout_9.addWidget(self.delete_all_button_2)
-
         self.verticalLayout_9.setStretch(0, 2)
         self.verticalLayout_9.setStretch(1, 3)
         self.verticalLayout_9.setStretch(2, 2)
@@ -523,21 +481,37 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setSpacing(7)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(11, 0, 11, 0)
+        self.numlabel1_2 = QLabel(self.groupBox_3)
+        self.numlabel1_2.setObjectName(u"numlabel1_2")
+        self.numlabel1_2.setLayoutDirection(Qt.LeftToRight)
+        self.numlabel1_2.setStyleSheet(u"*{\n"
+"	color:rgb(118, 118, 118)\n"
+"}")
+        self.numlabel1_2.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.verticalLayout_2.addWidget(self.numlabel1_2)
+
         self.horizontalLayout_7 = QHBoxLayout()
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.checkBox = QCheckBox(self.groupBox_3)
-        self.checkBox.setObjectName(u"checkBox")
+        self.select_all = QCheckBox(self.groupBox_3)
+        self.select_all.setObjectName(u"select_all")
 
-        self.horizontalLayout_7.addWidget(self.checkBox)
+        self.horizontalLayout_7.addWidget(self.select_all)
 
         self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_7.addItem(self.horizontalSpacer_6)
 
-        self.db = QPushButton(self.groupBox_3)
-        self.db.setObjectName(u"db")
+        self.export_selected = QPushButton(self.groupBox_3)
+        self.export_selected.setObjectName(u"export_selected")
 
-        self.horizontalLayout_7.addWidget(self.db)
+        self.horizontalLayout_7.addWidget(self.export_selected)
+
+        self.delete_selected = QPushButton(self.groupBox_3)
+        self.delete_selected.setObjectName(u"delete_selected")
+        self.delete_selected.setProperty("class", u"danger")
+
+        self.horizontalLayout_7.addWidget(self.delete_selected)
 
 
         self.verticalLayout_2.addLayout(self.horizontalLayout_7)
@@ -661,11 +635,8 @@ class Ui_MainWindow(object):
         self.searchButton.setProperty("type", QCoreApplication.translate("MainWindow", u"2", None))
         self.label_i1.setText("")
         self.label_pt.setText(QCoreApplication.translate("MainWindow", u"\u666e\u901a\u641c\u7d22\uff1a\u6839\u636e\u75c5\u6848\u53f7\u6216\u59d3\u540d\u6765\u641c\u7d22", None))
-        self.numlabel1.setText(QCoreApplication.translate("MainWindow", u"\u641c\u7d22\u7ed3\u679c\uff1a0\u4eba", None))
         self.label_i1_2.setText("")
         self.label_pt_2.setText(QCoreApplication.translate("MainWindow", u"\u9ad8\u7ea7\u641c\u7d22\uff1a\u6839\u636e\u67d0\u4e2a\u5b57\u6bb5\u6765\u641c\u7d22", None))
-        self.delete_selected_button.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664\u9009\u4e2d", None))
-        self.delete_all_button.setText(QCoreApplication.translate("MainWindow", u"\u5168\u90e8\u5220\u9664", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"\u76ee\u6807\u8868", None))
         self.list1.setItemText(0, QCoreApplication.translate("MainWindow", u"\u88681", None))
         self.list1.setItemText(1, QCoreApplication.translate("MainWindow", u"\u88682", None))
@@ -695,15 +666,13 @@ class Ui_MainWindow(object):
         self.searchButton_3.setProperty("type", QCoreApplication.translate("MainWindow", u"3", None))
         self.label_i1_3.setText("")
         self.label_pt_3.setText(QCoreApplication.translate("MainWindow", u"\u666e\u901a\u641c\u7d22\uff1a\u6839\u636e\u75c5\u6848\u53f7\u6216\u59d3\u540d\u6765\u641c\u7d22", None))
-        self.numlabel1_2.setText(QCoreApplication.translate("MainWindow", u"\u641c\u7d22\u7ed3\u679c\uff1a0\u4eba", None))
         self.label_i1_4.setText("")
         self.label_pt_4.setText(QCoreApplication.translate("MainWindow", u"\u9ad8\u7ea7\u641c\u7d22\uff1a\u6839\u636e\u67d0\u4e2a\u5b57\u6bb5\u6765\u641c\u7d22\uff08\u9ed8\u8ba4\u641c\u7d22\u8be5\u5b57\u6bb5\u975e\u7a7a\u7684\u75c5\u5386\uff09", None))
-        self.delete_selected_button_2.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664\u9009\u4e2d", None))
-        self.delete_all_button_2.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664\u5168\u90e8", None))
         self.groupBox_3.setTitle("")
-        self.checkBox.setText(QCoreApplication.translate("MainWindow", u"\u5168\u9009", None))
-        self.db.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664\u9009\u4e2d", None))
-        self.db.setProperty("class", "danger")
+        self.numlabel1_2.setText(QCoreApplication.translate("MainWindow", u"\u641c\u7d22\u7ed3\u679c\uff1a0\u4eba", None))
+        self.select_all.setText(QCoreApplication.translate("MainWindow", u"\u5168\u9009", None))
+        self.export_selected.setText(QCoreApplication.translate("MainWindow", u"\u5bfc\u51fa\u9009\u4e2d", None))
+        self.delete_selected.setText(QCoreApplication.translate("MainWindow", u"\u5220\u9664\u9009\u4e2d", None))
         self.loading_label.setText(QCoreApplication.translate("MainWindow", u"\u52a0\u8f7d\u4e2d", None))
         ___qtablewidgetitem = self.table.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"\u59d3\u540d", None));
