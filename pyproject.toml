@@ -48,7 +48,7 @@ pack = [
     "--show-progress", "--output-dir=out", 
     "--plugin-enable=pyside6", "src/main.py"
 ]
-main = { call = "src.main", env= { PYTHONPATH = "./src/"} }
+main = { call = "src.main", env = { PYTHONPATH = "./src/"} }
     
 [tool.hatch.metadata]
 allow-direct-references = true
