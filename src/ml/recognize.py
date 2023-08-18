@@ -2,7 +2,7 @@ from typing import Any
 from injector import inject
 import os
 from logging import getLogger
-from paddleocr import PaddleOCR
+from ppocr import PPOcr
 from ml.parse import parse_doc_file, parse_docx_file, parse_image, parse_pdf_file
 from ml.predict import read_generated_txt
 from LAC import LAC
@@ -12,8 +12,8 @@ logger = getLogger(__name__)
 
 class Recognizer:
     @inject
-    def __init__(self, paddleocr: PaddleOCR, lac: LAC):
-      self.paddleocr = paddleocr
+    def __init__(self, ppocr: PPOcr, lac: LAC):
+      self.ppocr = ppocr
       self.lac = lac
     
     def read_files2(self, path):
@@ -49,8 +49,8 @@ class Recognizer:
             case "pdf":
                 parse_pdf_file(pathname, filename, pathname)
                 
-            case "png" | "jpg":
-                parse_image(self.paddleocr, complete_name)
+            # case "png" | "jpg":
+            #     parse_image(self.paddleocr, complete_name)
             
             case _:
                 logger.warning("Not Support File Type")

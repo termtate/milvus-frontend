@@ -1,18 +1,13 @@
-import asyncio
-from typing import Any
 from PySide6 import QtWidgets
 from PySide6.QtCore import QItemSelectionModel, QModelIndex
 from PySide6.QtWidgets import QTableWidgetItem, QCheckBox
-from PySide6.QtUiTools import QUiLoader
-from PySide6.QtWidgets import QMessageBox, QFileDialog, QListWidgetItem, QMainWindow, QAbstractItemView
+from PySide6.QtWidgets import QMessageBox, QMainWindow, QAbstractItemView
 from injector import inject
 from network.model import Patient
 from typing import Sequence
 from config import settings
 from ui.viewmodel import State, ViewModel
 from assets.main_ui import Ui_MainWindow
-from qasync import asyncSlot, run
-from qt_material import QtStyleTools
 
 
 class TestWin(QMainWindow):
@@ -143,11 +138,6 @@ class TestWin(QMainWindow):
             self.ui.table.insertRow(row)
             for column, value in enumerate(data[row].model_dump().values()):
                 self.ui.table.setItem(row, column, QTableWidgetItem(str(value)))
-        
-            checkbox = QCheckBox()
-            self.table_data_checkboxes.append(checkbox)
-            self.ui.table.setCellWidget(row, 0, checkbox)
-        
         
         self._refreshing = False
     

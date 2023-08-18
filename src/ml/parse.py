@@ -1,6 +1,6 @@
 import os
 import docx
-from paddleocr import PaddleOCR
+from ppocr import PPOcr
 from pdfminer.converter import PDFPageAggregator
 from pdfminer.layout import LAParams, LTTextBoxHorizontal
 from pdfminer.pdfdocument import PDFDocument
@@ -8,11 +8,15 @@ from pdfminer.pdfinterp import PDFPageInterpreter, PDFResourceManager
 from pdfminer.pdfpage import PDFPage
 from pdfminer.pdfparser import PDFParser
 from win32com import client
+from ppocr.model import Success, Error
 
 
-def parse_image(ocr: PaddleOCR, file_path: str):
-    result = ocr.ocr(file_path, cls=True)
+def parse_image(ocr: PPOcr, file_path: str):
+    result = ocr.run(file_path)
     ans=""
+    # match result:
+    #     case Success():
+            
     for line in result:
         for i in line:
             temp = i[1][0]

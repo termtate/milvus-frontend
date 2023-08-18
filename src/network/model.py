@@ -1,7 +1,5 @@
-from pydantic.dataclasses import dataclass
-from typing import Literal, TypedDict
-from pydantic import RootModel, BaseModel, ConfigDict
-from typing_extensions import Required
+from typing import TypedDict
+from pydantic import BaseModel
 
 class Patient(BaseModel):
     id: int
@@ -172,15 +170,10 @@ class AnnSearchResult(BaseModel):
     limit: int
     offset: int
 
-class SearchResponse(BaseModel):
-    data: list[Patient]
-    limit: int
-    offset: int
-
 
 class AnnSearchParams(TypedDict, total=False):
     limit: int  # 10 by default
-    offset: int
+    offset: int  # 0 by default
     
 class ModifyResponse(BaseModel):
     insert_count: int

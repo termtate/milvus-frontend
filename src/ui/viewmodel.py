@@ -1,11 +1,9 @@
 import asyncio
 from functools import wraps
-import os
-from pprint import pprint
 from typing import Any, Sequence
 from typing_extensions import Unpack, TypedDict
 import pandas as pd
-from pydantic import BaseModel, TypeAdapter
+from pydantic import BaseModel
 from ml.recognize import Recognizer
 from network.model import Patient, PatientCreate
 from reactivex.subject import BehaviorSubject

@@ -1,3 +1,4 @@
+from pathlib import Path
 from pydantic_settings import BaseSettings
 import torch
 
@@ -38,6 +39,8 @@ class Settings(BaseSettings):
 
 
     DEVICE: str  = 'cuda' if torch.cuda.is_available() else 'cpu'
+    
+    PPOCR_PATH: Path = Path("PaddleOCR-json_v.1.3.0/PaddleOCR-json.exe")
 
 
 settings = Settings()

@@ -7,8 +7,6 @@ from qt_material import apply_stylesheet
 import asyncio
 import functools
 from ml.di import RecognizerModule
-from ml.model import Model
-from config import settings
 
 extra = {
     # Button colors
