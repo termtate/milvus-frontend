@@ -71,7 +71,7 @@ def with_loading_and_error(func):
 class ViewModel:
     @inject  # 使用inject给构造函数注入其他模块
     def __init__(self, client: Client, recognizer: Recognizer):
-        # BehaviorSubject是一个流，该流只保留一个数据，而且只保留最新一次的数据，
+        # BehaviorSubject是一个流，该流只保留最新一次的数据，
         # 所以必须要有一个初始值。
         # 流需要被其他订阅者订阅。当调用`BehaviorSubject.on_next()`方法时，
         # 所有订阅者都会被通知，即调用一次他们订阅的函数
