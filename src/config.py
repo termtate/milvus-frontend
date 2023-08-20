@@ -6,7 +6,6 @@ class Settings(BaseSettings):
     COLUMNS_NAME_MAP: dict[str, str] = {
         "ID": "id",
         "身份证号": "id_card_number",
-        
         "第几次住院": "hospitalize_num",
         "姓名": "name",
         "病案号": "case_number",
@@ -89,18 +88,6 @@ class Settings(BaseSettings):
     
     TABLE_COLUMNS: tuple[str, ...] = tuple(COLUMNS_NAME_MAP.keys())
     
-    THEME_EXTRA: dict[str, str] = {
-        # Button colors
-        'danger': '#dc3545',
-        'warning': '#ffc107',
-        'success': '#17a2b8',
-        # Font
-        # 'font_family': 'Roboto',
-        # Density
-        # 'density_scale': '0',
-        # Button Shape
-        # 'button_shape': 'default',
-    }
 
 
 settings = Settings()

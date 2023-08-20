@@ -15,17 +15,14 @@ class TestWin(QMainWindow):
     def __init__(self, viewmodel: ViewModel):
         super().__init__()
         self.ui = Ui_MainWindow()
-        # self.set_extra(settings.THEME_EXTRA)
         self.ui.setupUi(self)
 
         self.path = ''
         self.file_name = ""
-        # self.search_state=0
-        self.table_data_checkboxes: list[QCheckBox] = []
         
         self.viewmodel = viewmodel
         self.state = self.viewmodel.state
-        self.state.subscribe(
+        self.state.subscribe(  # 订阅state，当state更新时就调用一次observe函数
             on_next=self.observe
         )
         
@@ -45,7 +42,6 @@ class TestWin(QMainWindow):
         self.ui.stack2Button.clicked.connect(self.display2)
 
         self.ui.list1.currentIndexChanged.connect(self.selectionchange1)
-        # self.ui.getpathbutton.clicked.connect(lambda: self.getfile(self.ui.getpathbutton))
         self.ui.getpathbutton.clicked.connect(self.getpath)
         def storage():  # 识别提取并存入数据库
             if not self.path:
@@ -133,7 +129,6 @@ class TestWin(QMainWindow):
     
     def show_patients_on_table(self, data: Sequence[Patient]):
         self._refreshing = True
-        self.table_data_checkboxes.clear()
         for row in range(len(data)):
             self.ui.table.insertRow(row)
             for column, value in enumerate(data[row].model_dump().values()):

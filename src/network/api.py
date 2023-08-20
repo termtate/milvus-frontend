@@ -16,6 +16,9 @@ P = ParamSpec("P")
 def _serializer(
     model: Type[T]
 ) -> Callable[[Callable[P, Coroutine[Any, Any, httpx.Response]]], Callable[P, Coroutine[Any, Any, T]]]:
+    '''
+    装饰返回值为`httpx.Response`的异步函数，把原函数的`httpx.Response`返回值解析为`model`类型
+    '''
     def inner(func: Callable[P, Coroutine[Any, Any, httpx.Response]]):
         @functools.wraps(func)
         async def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
