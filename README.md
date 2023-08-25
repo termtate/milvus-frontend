@@ -14,7 +14,7 @@
 
 ## 打包
 
-1. 运行 `rye run pack`
+1. 运行 `rye run pack`（很可能需要科学上网）
 2. 将 .venv\paddle\libs 文件夹复制粘贴到 out\main.dist\paddle 文件夹内
 3. 将 .venv\qt_material 文件夹中的 fonts、resources、themes 文件夹和 material.css.template 文件复制粘贴到 out\main.dist\qt_material 文件夹内（如果没有 qt_material 文件夹就新建一个）
 4. 将 .venv\LAC 文件夹下的lac_model、rank_model、seg_model 文件夹复制粘贴到 out\main.dist\LAC 文件夹内（如果没有 LAC 文件夹就新建一个）
