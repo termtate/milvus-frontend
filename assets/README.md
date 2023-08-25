@@ -1,0 +1,1 @@
+**修改main.ui之后需要在生成的main_ui.py里把`import qrc1_rc`替换为`import assets.qrc1_rc`**
