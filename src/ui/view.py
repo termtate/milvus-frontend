@@ -3,9 +3,9 @@ from PySide6.QtCore import QItemSelectionModel, QModelIndex
 from PySide6.QtWidgets import QTableWidgetItem, QCheckBox
 from PySide6.QtWidgets import QMessageBox, QMainWindow, QAbstractItemView
 from injector import inject
-from network.model import Patient
+from common.model import Patient
 from typing import Sequence
-from config import settings
+from common.config import settings
 from ui.viewmodel import State, ViewModel
 from assets.main_ui import Ui_MainWindow
 
