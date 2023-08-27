@@ -5,12 +5,13 @@ from typing_extensions import Unpack, TypedDict
 import pandas as pd
 from pydantic import BaseModel
 from ml.recognize import Recognizer
-from network.model import Patient, PatientCreate
+from common.model import Patient, PatientCreate
 from reactivex.subject import BehaviorSubject
 from qasync import asyncSlot, asyncClose
 from injector import inject
-from network.api import Client
-from config import settings
+from db.crud import crud_patient
+from db.session import Session
+from common.config import settings
 from httpx._exceptions import HTTPError
 
 
@@ -70,7 +71,7 @@ def with_loading_and_error(func):
 
 class ViewModel:
     @inject  # 使用inject给构造函数注入其他模块
-    def __init__(self, client: Client, recognizer: Recognizer):
+    def __init__(self, session: Session, recognizer: Recognizer):
         # BehaviorSubject是一个流，该流只保留最新一次的数据，
         # 所以必须要有一个初始值。
         # 流需要被其他订阅者订阅。当调用`BehaviorSubject.on_next()`方法时，
@@ -83,8 +84,13 @@ class ViewModel:
                 upload_success=False
             )
         )
-        self.client = client
+        self.session = session
+        session.get_collection()
+        self.collection = session.collection
+        session.collection.load()
         self.recognizer = recognizer
+        
+        
     
     
     def _update(self, **values: Unpack[StateDict]):
@@ -191,5 +197,6 @@ class ViewModel:
     
     @asyncClose
     async def close(self, event):
-        await self.client.close()
+        self.collection.release()
+        self.session.connection.disconnect()
     

@@ -1,6 +1,21 @@
 from pydantic_settings import BaseSettings
 
+class MilvusSettings(BaseSettings):
+    HOST: str = "localhost"
+    PORT: int = 19530
+    
+    # https://milvus.io/docs/v2.0.x/build_index.md#Prepare-index-parameter
+    VECTOR_FIELD_INDEX_PARAMS: dict[str, str] = {
+        'metric_type': "L2", 
+        'index_type': "FLAT",
+    }
+    
+    VECTER_DIM: int = 512  # 向量维度
+    
+    MODEL_NAME_OR_PATH: str = r"model\distiluse-base-multilingual-cased-v2"
+
 class Settings(BaseSettings):
+    milvus: MilvusSettings = MilvusSettings()
     
     ANN_SEARCH_FIELDS: tuple[str, ...] = ("发作演变过程", "诱发因素", "情绪或情感")
     COLUMNS_NAME_MAP: dict[str, str] = {
