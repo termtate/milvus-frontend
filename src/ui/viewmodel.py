@@ -116,9 +116,11 @@ class ViewModel:
         if not query:
             self._update(error_message='输入不能为空！')
             return
-        patients = await self.crud_patient.get_patients_by_ann_search(
+        patients = await self.crud_patient.ann_search_patient(
             query=query,
-            field=settings.COLUMNS_NAME_MAP[field]
+            field=settings.COLUMNS_NAME_MAP[field],
+            limit=10,
+            offset=0
         )
         self._update(table_data=patients.data)
     
@@ -128,7 +130,8 @@ class ViewModel:
         '''
         更新病人的一个字段
         '''
-        await self.crud_patient.update_patient(id=id, field_name=settings.COLUMNS_NAME_MAP[field], value=value)
+        await self.crud_patient.update_patient_field(
+            patient_id=id, field_name=settings.COLUMNS_NAME_MAP[field], value=value)
         
         items = list(self.state.value.table_data)
         for item in items:
@@ -151,7 +154,7 @@ class ViewModel:
             patients.append(trans)
 
 
-        await self.crud_patient.create_patients(*[
+        await self.crud_patient.create(*[
             PatientCreate(**_) for _ in patients
         ])
         
@@ -191,6 +194,5 @@ class ViewModel:
     
     @asyncClose
     async def close(self, event):
-        self.collection.release()
-        self.session.connection.disconnect()
+        await self.crud_patient.disconnect()
     
