@@ -222,10 +222,19 @@ class Collection:
     
     @cached_property
     def primary_field(self) -> str:
+        return self._primary_field().name
+    
+    
+    @cached_property
+    def auto_id(self) -> bool:
+        return self._primary_field().auto_id
+    
+    
+    def _primary_field(self) -> FieldSchema:
         primary_field = self.collection.schema.primary_field
         if primary_field is None:
             raise PrimaryKeyException()
-        return primary_field.name
+        return primary_field
         
     
     def query(self, expr: str, output_fields: Sequence[str] | None = None) -> list[dict]: # TODO: 防止注入
@@ -269,14 +278,20 @@ class Collection:
     
     
     def update(self, id: int, field: str, value: Any):
+        '''
+        pymilvus 没有提供update api，所以只能先删除，后插入数据
+        '''
         items = self.query(f"{self.primary_field} == {id}")
-        assert len(items) != 0
+        assert len(items) == 1, f"不存在id为{id}的数据"
         
         item = items[0]
         assert field in item
         
         item[field] = value
         
+        if self.auto_id:
+            del item["id"]
+
         self.delete(id)
         a = [
             _[1] for _ in sorted(
@@ -284,16 +299,14 @@ class Collection:
                 key=lambda i: self.fields().index(i[0])
             )
         ]
-        a.append([0])
-        # pprint(a)
+        a.append([0])  # unused vector field
+        
         return self.collection.insert([[_] for _ in a])
 
     
     def _insert_df(self, df):
         fields = tuple(df.columns)
 
-        # pprint(tuple(self.fields()))
-        # pprint(fields)
         assert tuple(self.fields()) == fields, \
             "dataframe的字段名需要与milvus的collection的字段名的名称、数量、顺序一致"
             

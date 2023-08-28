@@ -170,10 +170,6 @@ class AnnSearchResult(BaseModel):
     limit: int
     offset: int
 
-
-class AnnSearchParams(TypedDict, total=False):
-    limit: int  # 10 by default
-    offset: int  # 0 by default
     
 class ModifyResponse(BaseModel):
     insert_count: int

@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 def init_db(conn: MilvusConnection) -> None:
     collection1, collection2 = create_collection(conn)
-    delegation = CollectionProxy(collection1, collection2)
+    proxy = CollectionProxy(collection1, collection2)
     logging.info("create collection1, collection2")
     
     df = pd.read_excel("output.xlsx", dtype={
@@ -23,7 +23,7 @@ def init_db(conn: MilvusConnection) -> None:
     
     del df["id"]
     
-    delegation.ann_insert(df.to_dict(orient="records"))
+    proxy.ann_insert(df.to_dict(orient="records"))
 
 def create_collection(conn: MilvusConnection) -> tuple[Collection, Collection]:
     return (conn.create_collection(

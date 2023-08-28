@@ -41,7 +41,7 @@ class CollectionProxy:
         
         return p1s, p2s
     
-    def concat(self, p1: list[dict], p2: list[dict]) -> list[dict]:
+    def concat(self, p1: list[dict], p2: list[dict]) -> list[dict[str, Any]]:
         p1.sort(key=lambda i: i[self.collection1.primary_field])
         p2.sort(key=lambda i: i[self.collection2.primary_field])
         

@@ -14,8 +14,22 @@ class MilvusSettings(BaseSettings):
     
     MODEL_NAME_OR_PATH: str = r"model\distiluse-base-multilingual-cased-v2"
 
+
 class Settings(BaseSettings):
     milvus: MilvusSettings = MilvusSettings()
+    
+    THEME_EXTRA: dict[str, str] = {
+        # Button colors
+        'danger': '#dc3545',
+        'warning': '#ffc107',
+        'success': '#17a2b8',
+        # Font
+        'font_family': 'Roboto',
+        # Density
+        'density_scale': '0',
+        # Button Shape
+        'button_shape': 'default',
+    }
     
     ANN_SEARCH_FIELDS: tuple[str, ...] = ("发作演变过程", "诱发因素", "情绪或情感")
     COLUMNS_NAME_MAP: dict[str, str] = {

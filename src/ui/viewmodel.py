@@ -1,6 +1,6 @@
 import asyncio
 from functools import wraps
-from typing import Any, Sequence, Callable, ParamSpec, TypeVar
+from typing import Any, Callable, Sequence
 from typing_extensions import Unpack, TypedDict
 import pandas as pd
 from pydantic import BaseModel
@@ -12,6 +12,11 @@ from injector import inject
 from db.crud import CRUDPatient
 from common.config import settings
 from httpx._exceptions import HTTPError
+import logging
+
+# logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class State(BaseModel):
@@ -47,16 +52,29 @@ def with_loading_state(func):
 
 def catch_error(func):
     '''
-    装饰器，在被装饰的函数运行时捕获HTTPError错误，并且把HTTPError的字符串更新为`State`的`error_message`
+    装饰器，在被装饰的函数运行时捕获Exception，并且把Exception的字符串更新为`State`的`error_message`
     '''
     @wraps(func)
     async def wrapper(self, *args, **kwargs):
         try:
             return await func(self, *args, **kwargs)
-        except HTTPError as e:
+        except Exception as e:
+            logger.exception(f"Exception raised in {func.__name__}. exception: {str(e)}")
             self._update(error_message=str(e), is_loading=False)
     
     return wrapper
+
+
+def log(func: Callable):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        args_repr = [repr(a) for a in args]
+        kwargs_repr = [f"{k}={v!r}" for k, v in kwargs.items()]
+        signature = ", ".join(args_repr + kwargs_repr)
+        logger.debug(f"function {func.__name__} called with args {signature}")
+        return func(*args, **kwargs)
+    return wrapper
+
 
 def with_loading_and_error(func):
     '''
@@ -100,6 +118,7 @@ class ViewModel:
     
     @asyncSlot()
     @with_loading_and_error
+    @log
     async def common_search(self, text: str):
         if not text:
             self._update(error_message='输入不能为空！')
@@ -112,6 +131,7 @@ class ViewModel:
 
     @asyncSlot()
     @with_loading_and_error
+    @log
     async def advanced_search(self, query: str, field: str):
         if not query:
             self._update(error_message='输入不能为空！')
@@ -126,6 +146,7 @@ class ViewModel:
     
     @asyncSlot()
     @with_loading_and_error
+    @log
     async def update_field(self, id: int, field: str, value: Any):
         '''
         更新病人的一个字段
@@ -141,8 +162,10 @@ class ViewModel:
         
         self._update(table_data=items)
     
+    
     @asyncSlot()
     @with_loading_and_error
+    @log
     async def upload_file(self, path: str):
         await asyncio.to_thread(self.recognizer.read_files2, path)  # 把一个非异步函数放到一个线程去执行
         res = self.recognizer.read_files2(path)
@@ -162,6 +185,7 @@ class ViewModel:
         
     @asyncSlot()
     @with_loading_and_error
+    @log
     async def delete_patients(self, *id: int):
         await self.crud_patient.delete_patients(*id)
         
@@ -172,8 +196,10 @@ class ViewModel:
         
         self._update(table_data=items)
 
+
     @asyncSlot()
     @with_loading_and_error
+    @log
     async def export_to_excel(self, path: str, *ids: int):
         selected = filter(
             lambda x: x.id in ids,

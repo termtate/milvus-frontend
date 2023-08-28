@@ -1,13 +1,18 @@
 import asyncio
-from typing import Any, Callable, ParamSpec, TypeVar, Coroutine
+import functools
+from typing import Any, Callable, ParamSpec, TypeVar, Coroutine, Type
+from injector import inject
+from pydantic import TypeAdapter
 from db.proxy import CollectionProxy
-from common.model import Patient, PatientCreate
+from common.model import Patient, PatientCreate, AnnSearchResult
 from common.config import settings
 from db.session import Session
 
 
 T = TypeVar("T")
 P = ParamSpec("P")
+
+
 def to_async(func: Callable[P, T]) -> Callable[P, Coroutine[Any, Any, T]]:
     '''
     将一个函数转为异步函数，这个异步函数将在一个新线程运行
@@ -17,17 +22,35 @@ def to_async(func: Callable[P, T]) -> Callable[P, Coroutine[Any, Any, T]]:
     return wrapper
 
 
+def serializer(
+    model: Type[T]
+) -> Callable[[Callable[P, Coroutine]], Callable[P, Coroutine[Any, Any, T]]]:
+    '''
+    把原函数的返回值变成`model`类型
+    '''
+    def inner(func: Callable[P, Coroutine]):
+        @functools.wraps(func)
+        async def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
+            
+            return TypeAdapter(model).validate_python((await func(*args, **kwargs)))
+        return wrapper
+    return inner
+
+
 class CRUDPatient:
+    @inject
     def __init__(self, session: Session) -> None:
         self.session = session
         self.collection = session.collection
         
-    
+        
+    @serializer(list[Patient])
     @to_async
     def get_patient_by_id(self, *, id: int) -> list[dict[str, Any]]:
         return self.collection.query("id", id)
     
     
+    @serializer(list[Patient])
     @to_async
     def get_patients_by_fields(
         self,
@@ -47,6 +70,7 @@ class CRUDPatient:
         return r
     
     
+    @serializer(AnnSearchResult)
     @to_async
     def ann_search_patient(self, query: str, field: str, limit: int, offset: int):
         return {
