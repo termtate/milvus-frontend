@@ -1,6 +1,6 @@
 import asyncio
 from functools import wraps
-from typing import Any, Sequence
+from typing import Any, Sequence, Callable, ParamSpec, TypeVar
 from typing_extensions import Unpack, TypedDict
 import pandas as pd
 from pydantic import BaseModel
@@ -9,8 +9,7 @@ from common.model import Patient, PatientCreate
 from reactivex.subject import BehaviorSubject
 from qasync import asyncSlot, asyncClose
 from injector import inject
-from db.crud import crud_patient
-from db.session import Session
+from db.crud import CRUDPatient
 from common.config import settings
 from httpx._exceptions import HTTPError
 
@@ -71,7 +70,7 @@ def with_loading_and_error(func):
 
 class ViewModel:
     @inject  # 使用inject给构造函数注入其他模块
-    def __init__(self, session: Session, recognizer: Recognizer):
+    def __init__(self, crud_patient: CRUDPatient, recognizer: Recognizer):
         # BehaviorSubject是一个流，该流只保留最新一次的数据，
         # 所以必须要有一个初始值。
         # 流需要被其他订阅者订阅。当调用`BehaviorSubject.on_next()`方法时，
@@ -84,14 +83,9 @@ class ViewModel:
                 upload_success=False
             )
         )
-        self.session = session
-        session.get_collection()
-        self.collection = session.collection
-        session.collection.load()
+        self.crud_patient = crud_patient
         self.recognizer = recognizer
         
-        
-    
     
     def _update(self, **values: Unpack[StateDict]):
         '''
@@ -111,18 +105,18 @@ class ViewModel:
             self._update(error_message='输入不能为空！')
             return
         if text.isdigit():
-            patients = await self.client.get_patients_by_fields("case_number", value=text)
+            patients = await self.crud_patient.get_patients_by_fields(field="case_number", value=text)
         else:
-            patients = await self.client.get_patients_by_fields(field="name", value=text)
+            patients = await self.crud_patient.get_patients_by_fields(field="name", value=text)
         self._update(table_data=patients)
-        
+
     @asyncSlot()
     @with_loading_and_error
     async def advanced_search(self, query: str, field: str):
         if not query:
             self._update(error_message='输入不能为空！')
             return
-        patients = await self.client.get_patients_by_ann_search(
+        patients = await self.crud_patient.get_patients_by_ann_search(
             query=query,
             field=settings.COLUMNS_NAME_MAP[field]
         )
@@ -134,7 +128,7 @@ class ViewModel:
         '''
         更新病人的一个字段
         '''
-        await self.client.update_patient(id=id, field_name=settings.COLUMNS_NAME_MAP[field], value=value)
+        await self.crud_patient.update_patient(id=id, field_name=settings.COLUMNS_NAME_MAP[field], value=value)
         
         items = list(self.state.value.table_data)
         for item in items:
@@ -157,7 +151,7 @@ class ViewModel:
             patients.append(trans)
 
 
-        await self.client.create_patients(*[
+        await self.crud_patient.create_patients(*[
             PatientCreate(**_) for _ in patients
         ])
         
@@ -166,7 +160,7 @@ class ViewModel:
     @asyncSlot()
     @with_loading_and_error
     async def delete_patients(self, *id: int):
-        await self.client.delete_patients(*id)
+        await self.crud_patient.delete_patients(*id)
         
         items = list(filter(
             lambda item: item.id not in id,

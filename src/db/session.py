@@ -13,7 +13,7 @@ class Session:
         )
         self._proxy: CollectionProxy | None = None
     
-    def get_collection(self):
+    def init_collection(self):
         self._proxy = CollectionProxy(
             collection1=self.connection.get_collection(
                 patients.table_name,

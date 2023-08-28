@@ -1,33 +1,56 @@
-from typing import Any
+import asyncio
+from typing import Any, Callable, ParamSpec, TypeVar, Coroutine
 from db.proxy import CollectionProxy
 from common.model import Patient, PatientCreate
 from common.config import settings
+from db.session import Session
 
+
+T = TypeVar("T")
+P = ParamSpec("P")
+def to_async(func: Callable[P, T]) -> Callable[P, Coroutine[Any, Any, T]]:
+    '''
+    将一个函数转为异步函数，这个异步函数将在一个新线程运行
+    '''
+    async def wrapper(*args: P.args, **kwargs: P.kwargs):
+        return await asyncio.to_thread(func, *args, **kwargs)
+    return wrapper
 
 
 class CRUDPatient:
-    def get_patient_by_id(self, collection: CollectionProxy, *, id: int) -> list[dict[str, Any]]:
-        return collection.query("id", id)
+    def __init__(self, session: Session) -> None:
+        self.session = session
+        self.collection = session.collection
+        
     
-    def get_patient_by_fields(
+    @to_async
+    def get_patient_by_id(self, *, id: int) -> list[dict[str, Any]]:
+        return self.collection.query("id", id)
+    
+    
+    @to_async
+    def get_patients_by_fields(
         self,
-        collection: CollectionProxy, 
         *, 
         field: str,
         value: Any
     ) -> list[dict[str, Any]]:
-        return collection.query(field, value)
+        return self.collection.query(field, value)
     
-    def create(self, collection: CollectionProxy, *patients: PatientCreate):        
-        r = collection.ann_insert([_.model_dump() for _ in patients])
+    
+    @to_async
+    def create(self,  *patients: PatientCreate):        
+        r = self.collection.ann_insert([_.model_dump() for _ in patients])
 
-        collection.flush()
+        self.collection.flush()
 
         return r
     
-    def ann_search_patient(self, collection: CollectionProxy, query: str, field: str, limit: int, offset: int):
+    
+    @to_async
+    def ann_search_patient(self, query: str, field: str, limit: int, offset: int):
         return {
-            "data": collection.ann_search(
+            "data": self.collection.ann_search(
                 query=query,
                 search_config={
                     "anns_field": field,
@@ -40,28 +63,24 @@ class CRUDPatient:
             "offset": offset
         }
     
+    @to_async
     def delete_patients(
         self, 
-        collection: CollectionProxy,
         *id: int
     ):
-        return collection.delete(*id)
+        return self.collection.delete(*id)
     
-    def delete_all(self, collection: CollectionProxy):
-        pass
     
+    @to_async
     def update_patient_field(
         self, 
-        collection: CollectionProxy, 
         patient_id: int, 
         field_name: str, 
         value: Any
     ):
-        return collection.update(id=patient_id, field=field_name, value=value)
-        
-        
-        
-        
-        
-        
-crud_patient = CRUDPatient()
+        return self.collection.update(id=patient_id, field=field_name, value=value)
+
+    @to_async
+    def disconnect(self):
+        self.collection.release()
+        self.session.connection.disconnect()

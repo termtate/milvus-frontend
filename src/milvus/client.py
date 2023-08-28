@@ -1,4 +1,5 @@
-from pymilvus import SearchResult, connections, CollectionSchema, DataType, utility, FieldSchema
+import asyncio
+from pymilvus import SearchResult, connections, CollectionSchema, DataType, utility, FieldSchema, SearchFuture
 from pymilvus import Collection as _Collection
 from typing import Any, Union, Optional, Sequence
 from contextlib import contextmanager, AbstractContextManager
@@ -10,9 +11,8 @@ from milvus.embedding import text_embedding
 from logging import getLogger
 from pymilvus.exceptions import PrimaryKeyException
 from milvus.config import settings
+import asyncio
 
-
-logger = getLogger(__name__)
 
 
 class MilvusConnection(AbstractContextManager):
