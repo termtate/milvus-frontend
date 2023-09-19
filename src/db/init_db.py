@@ -11,19 +11,9 @@ from db.proxy import CollectionProxy
 logger = logging.getLogger(__name__)
 
 def init_db(conn: MilvusConnection) -> None:
-    collection1, collection2 = create_collection(conn)
-    proxy = CollectionProxy(collection1, collection2)
-    logging.info("create collection1, collection2")
-    
-    df = pd.read_excel("output.xlsx", dtype={
-            "病案号": str,
-            "电话": str,
-            "症状性癫痫": str
-        }).rename(columns=settings.COLUMNS_NAME_MAP).fillna(value="")
-    
-    del df["id"]
-    
-    proxy.ann_insert(df.to_dict(orient="records"))
+    create_collection(conn)
+    logging.info("created collection1, collection2")
+
 
 def create_collection(conn: MilvusConnection) -> tuple[Collection, Collection]:
     return (conn.create_collection(

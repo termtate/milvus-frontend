@@ -53,6 +53,6 @@ class Recognizer:
             #     parse_image(self.paddleocr, complete_name)
             
             case _:
-                logger.warning("Not Support File Type")
+                logger.warning("Not Supported File Type")
     
 

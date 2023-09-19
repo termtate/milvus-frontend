@@ -14,9 +14,9 @@ P = ParamSpec("P")
 
 
 def to_async(func: Callable[P, T]) -> Callable[P, Coroutine[Any, Any, T]]:
-    '''
+    """
     将一个函数转为异步函数，这个异步函数将在一个新线程运行
-    '''
+    """
     async def wrapper(*args: P.args, **kwargs: P.kwargs):
         return await asyncio.to_thread(func, *args, **kwargs)
     return wrapper
@@ -25,9 +25,9 @@ def to_async(func: Callable[P, T]) -> Callable[P, Coroutine[Any, Any, T]]:
 def serializer(
     model: Type[T]
 ) -> Callable[[Callable[P, Coroutine]], Callable[P, Coroutine[Any, Any, T]]]:
-    '''
+    """
     把原函数的返回值变成`model`类型
-    '''
+    """
     def inner(func: Callable[P, Coroutine]):
         @functools.wraps(func)
         async def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
@@ -62,7 +62,7 @@ class CRUDPatient:
     
     
     @to_async
-    def create(self,  *patients: PatientCreate):        
+    def create_patients(self,  *patients: PatientCreate):        
         r = self.collection.ann_insert([_.model_dump() for _ in patients])
 
         self.collection.flush()

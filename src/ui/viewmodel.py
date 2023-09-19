@@ -20,9 +20,9 @@ logger.setLevel(logging.DEBUG)
 
 
 class State(BaseModel):
-    '''
+    """
     提供给界面的状态，界面需要根据这些数据自行渲染
-    '''
+    """
     is_loading: bool
     error_message: str | None  # 如果不为空，就显示弹窗
     upload_success: bool
@@ -39,9 +39,9 @@ class StateDict(TypedDict, total=False):  # for type checking
 
 
 def with_loading_state(func):
-    '''
+    """
     装饰器，在被装饰的函数运行时将`State`的`is_loading`值修改为True
-    '''
+    """
     @wraps(func)
     async def wrapper(self, *args, **kwargs):
         self._update(is_loading=True)
@@ -51,9 +51,9 @@ def with_loading_state(func):
     return wrapper
 
 def catch_error(func):
-    '''
+    """
     装饰器，在被装饰的函数运行时捕获Exception，并且把Exception的字符串更新为`State`的`error_message`
-    '''
+    """
     @wraps(func)
     async def wrapper(self, *args, **kwargs):
         try:
@@ -77,9 +77,9 @@ def log(func: Callable):
 
 
 def with_loading_and_error(func):
-    '''
+    """
     装饰器，同时装饰`with_loading_state`和`catch_error`
-    '''
+    """
     return catch_error(
         with_loading_state(func)
     )
@@ -148,9 +148,9 @@ class ViewModel:
     @with_loading_and_error
     @log
     async def update_field(self, id: int, field: str, value: Any):
-        '''
+        """
         更新病人的一个字段
-        '''
+        """
         await self.crud_patient.update_patient_field(
             patient_id=id, field_name=settings.COLUMNS_NAME_MAP[field], value=value)
         
@@ -177,7 +177,7 @@ class ViewModel:
             patients.append(trans)
 
 
-        await self.crud_patient.create(*[
+        await self.crud_patient.create_patients(*[
             PatientCreate(**_) for _ in patients
         ])
         

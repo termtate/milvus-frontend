@@ -5,7 +5,7 @@
 - view订阅viewmodel的State状态，根据State的数据渲染界面，并且在需要通知viewmodel时调用viewmodel公开的方法。
 - viewmodel需要公开State状态，并且公开被`asyncSlot()`装饰的async函数，提供给view作为事件的回调。同时处理好回调之后数据的改变，结合其他模块生成新的数据。
 - view的代码应该尽量简洁，不要过多处理业务逻辑，在遇到需要外部数据的的情况下就调用viewmodel的函数，不要在view层内修改State状态。
-![mvi示意图](/assets/OIP-C.jfif)
+![mvi示意图](/images/OIP-C.jfif)
 
 
 ## 外部模块依赖

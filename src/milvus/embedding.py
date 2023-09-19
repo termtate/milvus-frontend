@@ -1,8 +1,9 @@
 from sentence_transformers import SentenceTransformer
 from numpy.typing import NDArray
+from milvus.config import settings
 
 
-text_embedding_model = SentenceTransformer(r"I:\distiluse-base-multilingual-cased-v2")
+text_embedding_model = SentenceTransformer(settings.MODEL_NAME_OR_PATH)
 
 
 def text_embedding(text: str) -> NDArray:

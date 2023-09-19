@@ -48,7 +48,6 @@ class MilvusConnection(AbstractContextManager):
         
     def get_collection(self, name: str, embedding_fields: Sequence[str]):
         return Collection(
-            self, 
             _Collection(name=name),
             [_Collection(name=field) for field in embedding_fields]
         ) 
@@ -137,7 +136,7 @@ class MilvusConnection(AbstractContextManager):
         
         collection.create_index(field_name="unused")
 
-        return Collection(self, collection, vector_collections)
+        return Collection(collection, vector_collections)
     
     
 class Collection:
@@ -146,15 +145,13 @@ class Collection:
         >>> with collection.load_data():
         >>>     res = collection.query(expr="id in [1, 2]")
         >>>     print(res)
-        -   [{"id": 1, ...}, {"id": 2, ...}]
+        ... [{"id": 1, "name": "first", "content": "1"}, {"id": 2, "name": "second", "content": "2"}]
     '''
     def __init__(
         self, 
-        connection: "MilvusConnection",
         collection: _Collection,
         vector_collections: Sequence[_Collection]
     ) -> None:
-        self.conn = connection
         self.collection = collection
         
         self.vector_collections = {
