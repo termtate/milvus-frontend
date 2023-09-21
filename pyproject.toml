@@ -52,7 +52,7 @@ pack = [
     "--include-package-data=qt_material,LAC",
     "--include-package=transformers.models",
     "--user-package-configuration-file=nuitka-package.config.yml",
-    # "--disable-console",
+    # "--disable-console",  # 等到生产环境就取消注释
     "src/main.py"
 ]
 main = { call = "src.main", env = { PYTHONPATH = "./src/"} }

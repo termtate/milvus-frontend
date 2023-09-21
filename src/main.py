@@ -8,6 +8,7 @@ import asyncio
 import functools
 from ml.di import RecognizerModule
 from db.di import CollectionModule
+from ml.model import Model   # 由于torch模型保存的路径依赖问题，必须要在入口文件导入Model
 from common import settings
 
 
@@ -35,6 +36,7 @@ async def main():
     win.show()
     await future
     return True
+
 
 if __name__ == "__main__":
     try:

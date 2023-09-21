@@ -77,10 +77,15 @@ def parse_docx_file(file_path: str):
 def parse_doc_file(file_path: str):
     path = file_path.replace("/", "\\")
     word = client.DispatchEx("Word.Application")
-    print(path)
     doc = word.Documents.Open(path)
     tempname = f"{path}x"
     doc.SaveAs(tempname, 12)
 
     doc.Close()
-    parse_docx_file(file_path=tempname)
+    
+    
+    docx_reader = docx.Document(tempname)
+    with open(f"{file_path}.txt", "w", encoding='utf-8') as f:
+        for par in docx_reader.paragraphs:
+            f.write(par.text)
+            f.write("\n")

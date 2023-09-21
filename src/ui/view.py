@@ -52,6 +52,7 @@ class TestWin(QMainWindow):
                 return
             res = asyncio.gather(*[self.viewmodel.upload_file(path) for path in self.files_path])
             self.files_path = []
+            self.ui.plainTextEdit.appendPlainText("正在导入病历。。。")
             return res
 
         self.ui.pushButton.clicked.connect(storage)

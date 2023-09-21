@@ -4,6 +4,7 @@ from pymilvus.exceptions import ConnectionNotExistException
 from db.proxy import CollectionProxy
 from db.models.patients import patients
 from db.models.patient_2 import patients2
+from db.init_db import init_if_need
 
 class Session:
     def __init__(self) -> None:
@@ -14,6 +15,7 @@ class Session:
         self._proxy: CollectionProxy | None = None
     
     def init_collection(self):
+        init_if_need(self.connection)
         self._proxy = CollectionProxy(
             collection1=self.connection.get_collection(
                 patients.table_name,
