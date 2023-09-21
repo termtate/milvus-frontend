@@ -6,7 +6,7 @@ dist/
 wheels/
 *.egg-info
 out/
-%projects%\
+%projects%*/
 
 # venv
 .venv
@@ -22,3 +22,4 @@ test*/
 # other
 output.xlsx
 PaddleOCR-json_v.1.3.0/
+model/

@@ -7,20 +7,11 @@ from qt_material import apply_stylesheet
 import asyncio
 import functools
 from ml.di import RecognizerModule
+from db.di import CollectionModule
+from common import settings
 
-extra = {
-    # Button colors
-    'danger': '#dc3545',
-    'warning': '#ffc107',
-    'success': '#17a2b8',
-    # Font
-    'font_family': 'Roboto',
-    # Density
-    'density_scale': '0',
-    # Button Shape
-    'button_shape': 'default',
-}
 
+# https://github.com/CabbageDevelopment/qasync/blob/28c65995497a9b5653547060ccc8b24c56cc5f45/examples/aiohttp_fetch.py#L73C18-L73C18
 async def main():
     def close_future(future, loop):
         loop.call_later(10, future.cancel)
@@ -30,14 +21,16 @@ async def main():
     future = asyncio.Future()
 
     app = QApplication.instance()
-    apply_stylesheet(app, "light_blue.xml", extra=extra, invert_secondary=True)
+    # https://github.com/UN-GCPDS/qt-material/tree/master#themes
+    apply_stylesheet(app, "light_blue.xml", extra=settings.THEME_EXTRA, invert_secondary=True)
 
     if hasattr(app, "aboutToQuit"):
         getattr(app, "aboutToQuit").connect(
             functools.partial(close_future, future, loop)
         )
 
-    injector = Injector([RecognizerModule()])
+    # 依赖注入模块injector的入口
+    injector = Injector([RecognizerModule(), CollectionModule()])
     win = injector.get(TestWin)
     win.show()
     await future

@@ -18,8 +18,6 @@ dependencies = [
     "reactivex>=4.0.4",
     "qasync>=0.24.0",
     "pyside6>=6.5.2",
-    # network
-    "httpx>=0.24.1",
     # ml
     "pytorch-crf>=0.7.2",
     "seqeval==1.2.2",
@@ -29,6 +27,9 @@ dependencies = [
     "python-docx>=0.8.11",
     "setuptools>=68.0.0",
     "lac>=2.1.2",
+    # milvus
+    "pymilvus>=2.3.0",
+    "sentence_transformers>=2.2.2",
 ]
 readme = "README.md"
 requires-python = ">= 3.10"
@@ -44,9 +45,15 @@ dev-dependencies = []
 [tool.rye.scripts]
 pack = [
     "python", "-m",
-    "nuitka", "--standalone", "--show-memory", 
-    "--show-progress", "--output-dir=out", 
-    "--plugin-enable=pyside6", "src/main.py"
+    "nuitka", "--standalone", 
+    "--show-memory", "--show-progress", 
+    "--output-dir=out", 
+    "--plugin-enable=pyside6", 
+    "--include-package-data=qt_material,LAC",
+    "--include-package=transformers.models",
+    "--user-package-configuration-file=nuitka-package.config.yml",
+    # "--disable-console",
+    "src/main.py"
 ]
 main = { call = "src.main", env = { PYTHONPATH = "./src/"} }
     
