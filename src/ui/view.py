@@ -1,3 +1,4 @@
+import asyncio
 from PySide6 import QtWidgets
 from PySide6.QtCore import QItemSelectionModel, QModelIndex
 from PySide6.QtWidgets import QTableWidgetItem, QCheckBox
@@ -15,10 +16,12 @@ class TestWin(QMainWindow):
     def __init__(self, viewmodel: ViewModel):
         super().__init__()
         self.ui = Ui_MainWindow()
+        # 初始化 main_ui 的 ui
         self.ui.setupUi(self)
-
-        self.path = ''
-        self.file_name = ""
+        
+        # 选择的病历的所有文件的路径
+        self.files_path: list[str] = []
+        # self.file_name = ""
         
         self.viewmodel = viewmodel
         self.state = self.viewmodel.state
@@ -41,14 +44,14 @@ class TestWin(QMainWindow):
         self.ui.stack1Button.clicked.connect(self.display1)
         self.ui.stack2Button.clicked.connect(self.display2)
 
-        self.ui.list1.currentIndexChanged.connect(self.selectionchange1)
+        # self.ui.list1.currentIndexChanged.connect(self.selectionchange1)
         self.ui.getpathbutton.clicked.connect(self.getpath)
         def storage():  # 识别提取并存入数据库
-            if not self.path:
+            if not self.files_path:
                 self.ui.plainTextEdit.appendPlainText("请先选择文件夹路径！")
                 return
-            res = self.viewmodel.upload_file(self.path)
-            self.path = ''
+            res = asyncio.gather(*[self.viewmodel.upload_file(path) for path in self.files_path])
+            self.files_path = []
             return res
 
         self.ui.pushButton.clicked.connect(storage)
@@ -164,9 +167,14 @@ class TestWin(QMainWindow):
 
     def getpath(self):      # 读取路径
         self.ui.plainTextEdit.clear()
-        filepath = QtWidgets.QFileDialog.getExistingDirectory(self, "请选择文件夹路径")
-        self.path = filepath
-        self.ui.plainTextEdit.appendPlainText(f"选择的路径为：{filepath}")
+        filespath, _ = QtWidgets.QFileDialog.getOpenFileNames(
+            self, 
+            "请选择文件路径", 
+            filter="病历文件 (*.txt *.docx *.doc *.pdf *.jpg *.png)"
+        )
+
+        self.files_path = filespath
+        self.ui.plainTextEdit.appendPlainText(f"选择的文件为：{', '.join(filespath)}")
         self.ui.getpathbutton.toggle()
 
     def export_selected_to_excel(self):
@@ -175,22 +183,22 @@ class TestWin(QMainWindow):
         if len(ids) != 0:
             return self.viewmodel.export_to_excel(dir_path, *ids)
 
-    def selectionchange1(self):     # 设置下拉框
-        self.ui.list2.clear()
-        if self.ui.list1.currentText() == '表1':
-            self.ui.list2.addItems(list(settings.ANN_SEARCH_FIELDS))
-            # self.ui.list2.addItems(['症状性癫痫', '发育迟缓', '抽动症', '注意缺陷多动障碍', '自闭症', '局灶运动性发作', '局灶非运动发作', '局灶性继发双侧强直_阵挛发作',
-            #                         '全面性运动性发作', '全面性非运动性发作', '新生儿期起病', '婴儿期起病', '儿童期起病', '青少年_成年期起病', '与年龄无特殊关系的癫痫综合征',
-            #                         '其他癫痫综合征'])
-        if self.ui.list1.currentText() == '表2':
-            self.ui.list2.addItems(['诱发因素', '简单感觉发作', '认知', '情绪或情感', '自主神经', '自动症', '运动型', '跌倒',
-                                    '发作演变过程', '发作持续时间', '发作后表现', '发作频次', '伴发热'])
-        if self.ui.list1.currentText() == '表3':
-            self.ui.list2.addItems(['惊厥史', '有无新生儿惊厥', '有无热性惊厥史', '有手术史', '外伤史', '输血史', '预防接种史', '母孕年龄',
-                                    '孕期疾病', '孕次产出', '出生体重', '分娩方式', '是否有出生窒息', '是否有重度黄疸', '羊水污染',
-                                    '喂养困难', '呕吐', '腹泻', '生长发育史迟缓', '生长发育倒退', '生长发育里程碑', '亲属是否有癫痫病人',
-                                    '父母是否有过热性惊厥', '父母是否近亲结婚', '遗传代谢疾病', '求学困难', '被过度保护'
-                                    , '心理压力大', '头围', '色素沉积'])
-        if self.ui.list1.currentText() == '表4':
-            self.ui.list2.addItems(['血氨', '血乳酸', '血、尿代谢筛查', '电解质', '铜兰蛋白', '脑脊液', '基因检查', '头部CT',
-                                    '头部MRI', '头皮脑电图', '抗癫痫药物', '生酮饮食', '癫痫外科'])
+    # def selectionchange1(self):     # 设置下拉框
+    #     self.ui.list2.clear()
+    #     if self.ui.list1.currentText() == '表1':
+    #         self.ui.list2.addItems(list(settings.ANN_SEARCH_FIELDS))
+    #         # self.ui.list2.addItems(['症状性癫痫', '发育迟缓', '抽动症', '注意缺陷多动障碍', '自闭症', '局灶运动性发作', '局灶非运动发作', '局灶性继发双侧强直_阵挛发作',
+    #         #                         '全面性运动性发作', '全面性非运动性发作', '新生儿期起病', '婴儿期起病', '儿童期起病', '青少年_成年期起病', '与年龄无特殊关系的癫痫综合征',
+    #         #                         '其他癫痫综合征'])
+    #     if self.ui.list1.currentText() == '表2':
+    #         self.ui.list2.addItems(['诱发因素', '简单感觉发作', '认知', '情绪或情感', '自主神经', '自动症', '运动型', '跌倒',
+    #                                 '发作演变过程', '发作持续时间', '发作后表现', '发作频次', '伴发热'])
+    #     if self.ui.list1.currentText() == '表3':
+    #         self.ui.list2.addItems(['惊厥史', '有无新生儿惊厥', '有无热性惊厥史', '有手术史', '外伤史', '输血史', '预防接种史', '母孕年龄',
+    #                                 '孕期疾病', '孕次产出', '出生体重', '分娩方式', '是否有出生窒息', '是否有重度黄疸', '羊水污染',
+    #                                 '喂养困难', '呕吐', '腹泻', '生长发育史迟缓', '生长发育倒退', '生长发育里程碑', '亲属是否有癫痫病人',
+    #                                 '父母是否有过热性惊厥', '父母是否近亲结婚', '遗传代谢疾病', '求学困难', '被过度保护'
+    #                                 , '心理压力大', '头围', '色素沉积'])
+    #     if self.ui.list1.currentText() == '表4':
+    #         self.ui.list2.addItems(['血氨', '血乳酸', '血、尿代谢筛查', '电解质', '铜兰蛋白', '脑脊液', '基因检查', '头部CT',
+    #                                 '头部MRI', '头皮脑电图', '抗癫痫药物', '生酮饮食', '癫痫外科'])

@@ -15,12 +15,12 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QGroupBox,
-    QHBoxLayout, QHeaderView, QLabel, QLineEdit,
-    QMainWindow, QMenuBar, QPlainTextEdit, QPushButton,
-    QSizePolicy, QSpacerItem, QStackedWidget, QStatusBar,
-    QTabWidget, QTableWidget, QTableWidgetItem, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFormLayout,
+    QGroupBox, QHBoxLayout, QHeaderView, QLabel,
+    QLayout, QLineEdit, QMainWindow, QMenuBar,
+    QPlainTextEdit, QPushButton, QSizePolicy, QSpacerItem,
+    QStackedWidget, QStatusBar, QTabWidget, QTableWidget,
+    QTableWidgetItem, QVBoxLayout, QWidget)
 import assets.qrc1_rc
 
 class Ui_MainWindow(object):
@@ -92,10 +92,9 @@ class Ui_MainWindow(object):
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.centralwidget.setStyleSheet(u"")
-        self.verticalLayout = QVBoxLayout(self.centralwidget)
-        self.verticalLayout.setSpacing(0)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(-1, 11, -1, -1)
+        self.formLayout = QFormLayout(self.centralwidget)
+        self.formLayout.setObjectName(u"formLayout")
+        self.formLayout.setContentsMargins(-1, 11, -1, -1)
         self.tabWidget = QTabWidget(self.centralwidget)
         self.tabWidget.setObjectName(u"tabWidget")
         self.tab_3 = QWidget()
@@ -106,9 +105,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_10.setContentsMargins(0, 0, 0, 0)
         self.groupBox_2 = QGroupBox(self.tab_3)
         self.groupBox_2.setObjectName(u"groupBox_2")
+        self.groupBox_2.setMaximumSize(QSize(1000, 350))
+        self.groupBox_2.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignTop)
         self.verticalLayout_4 = QVBoxLayout(self.groupBox_2)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.verticalLayout_4.setContentsMargins(11, 30, 11, 0)
+        self.verticalLayout_4.setContentsMargins(0, 10, 11, 0)
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -143,7 +144,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addItem(self.horizontalSpacer_3)
 
-        self.horizontalLayout.setStretch(0, 2)
         self.horizontalLayout.setStretch(1, 6)
         self.horizontalLayout.setStretch(2, 1)
         self.horizontalLayout.setStretch(3, 1)
@@ -154,7 +154,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.horizontalLayout_2.setContentsMargins(-1, -1, -1, 10)
+        self.horizontalLayout_2.setContentsMargins(-1, -1, -1, 0)
         self.horizontalSpacer_2 = QSpacerItem(37, 17, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer_2)
@@ -167,6 +167,11 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setSpacing(5)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.verticalLayout_3.setContentsMargins(0, -1, 0, -1)
+        self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setSpacing(10)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setSizeConstraint(QLayout.SetMinimumSize)
+        self.verticalLayout.setContentsMargins(-1, -1, -1, 0)
         self.label_2 = QLabel(self.page)
         self.label_2.setObjectName(u"label_2")
         self.label_2.setBaseSize(QSize(0, 0))
@@ -174,7 +179,7 @@ class Ui_MainWindow(object):
 "	font-weight: bold;\n"
 "}")
 
-        self.verticalLayout_3.addWidget(self.label_2)
+        self.verticalLayout.addWidget(self.label_2)
 
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setSpacing(0)
@@ -199,7 +204,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.setStretch(0, 9)
         self.horizontalLayout_3.setStretch(1, 1)
 
-        self.verticalLayout_3.addLayout(self.horizontalLayout_3)
+        self.verticalLayout.addLayout(self.horizontalLayout_3)
 
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setSpacing(0)
@@ -225,7 +230,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.setStretch(0, 1)
         self.horizontalLayout_4.setStretch(1, 25)
 
-        self.verticalLayout_3.addLayout(self.horizontalLayout_4)
+        self.verticalLayout.addLayout(self.horizontalLayout_4)
 
         self.horizontalLayout_5 = QHBoxLayout()
         self.horizontalLayout_5.setSpacing(0)
@@ -251,9 +256,12 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.setStretch(0, 1)
         self.horizontalLayout_5.setStretch(1, 30)
 
-        self.verticalLayout_3.addLayout(self.horizontalLayout_5)
+        self.verticalLayout.addLayout(self.horizontalLayout_5)
 
-        self.verticalSpacer = QSpacerItem(20, 143, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_3.addLayout(self.verticalLayout)
+
+        self.verticalSpacer = QSpacerItem(20, 100, QSizePolicy.Minimum, QSizePolicy.Maximum)
 
         self.verticalLayout_3.addItem(self.verticalSpacer)
 
@@ -462,11 +470,10 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addWidget(self.stacks)
 
-        self.horizontalSpacer_4 = QSpacerItem(158, 292, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_4 = QSpacerItem(158, 292, QSizePolicy.MinimumExpanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer_4)
 
-        self.horizontalLayout_2.setStretch(0, 2)
         self.horizontalLayout_2.setStretch(1, 8)
         self.horizontalLayout_2.setStretch(2, 2)
 
@@ -478,7 +485,7 @@ class Ui_MainWindow(object):
         self.groupBox_3 = QGroupBox(self.tab_3)
         self.groupBox_3.setObjectName(u"groupBox_3")
         self.verticalLayout_2 = QVBoxLayout(self.groupBox_3)
-        self.verticalLayout_2.setSpacing(7)
+        self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(11, 0, 11, 0)
         self.numlabel1_2 = QLabel(self.groupBox_3)
@@ -543,6 +550,7 @@ class Ui_MainWindow(object):
         self.table.setHorizontalHeaderItem(6, __qtablewidgetitem6)
         self.table.setObjectName(u"table")
         self.table.setEnabled(True)
+        self.table.setMinimumSize(QSize(0, 200))
         self.table.setDefaultDropAction(Qt.IgnoreAction)
         self.table.horizontalHeader().setStretchLastSection(False)
 
@@ -599,7 +607,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_6.setStretch(2, 3)
         self.tabWidget.addTab(self.tab_4, "")
 
-        self.verticalLayout.addWidget(self.tabWidget)
+        self.formLayout.setWidget(0, QFormLayout.SpanningRole, self.tabWidget)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
@@ -689,7 +697,7 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem6 = self.table.horizontalHeaderItem(6)
         ___qtablewidgetitem6.setText(QCoreApplication.translate("MainWindow", u"\u8be6\u7ec6\u4fe1\u606f", None));
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QCoreApplication.translate("MainWindow", u"\u641c\u7d22\u75c5\u4eba", None))
-        self.getpathbutton.setText(QCoreApplication.translate("MainWindow", u"\u8bf7\u9009\u62e9\u75c5\u5386\u6240\u5728\u7684\u6587\u4ef6\u5939", None))
+        self.getpathbutton.setText(QCoreApplication.translate("MainWindow", u"\u8bf7\u9009\u62e9\u75c5\u5386\u6587\u4ef6", None))
         self.getpathbutton.setProperty("type", QCoreApplication.translate("MainWindow", u"4", None))
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"\u52a0\u5165\u6570\u636e\u5e93", None))
         self.pushButton.setProperty("type", QCoreApplication.translate("MainWindow", u"4", None))

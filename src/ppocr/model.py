@@ -13,7 +13,7 @@ class Success(BaseModel):
     data: list[Data]
 
 class Error(BaseModel):
-    code: Literal[101, 200, 202]  # TODO
+    code: Literal[101, 200, 202]  # TODO https://github.com/hiroi-sora/PaddleOCR-json#%E8%BF%94%E5%9B%9E%E5%80%BC%E8%AF%B4%E6%98%8E
     data: str
 
 RecognizeResult = TypeAdapter(Success | Error)

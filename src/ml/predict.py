@@ -5,7 +5,7 @@ import torch
 from LAC import LAC
 
 def read_generated_txt(lac: LAC, path: str):
-    with open(path, "r", encoding="UTF-8") as f:
+    with open(path, "r", encoding="utf-8") as f:
         text = f.read()
         return output_labels(lac, text)
             

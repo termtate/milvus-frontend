@@ -79,14 +79,11 @@
    <property name="styleSheet">
     <string notr="true"/>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
-    <property name="spacing">
-     <number>0</number>
-    </property>
+   <layout class="QFormLayout" name="formLayout">
     <property name="topMargin">
      <number>11</number>
     </property>
-    <item>
+    <item row="0" column="0" colspan="2">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
        <number>0</number>
@@ -113,15 +110,24 @@
         </property>
         <item>
          <widget class="QGroupBox" name="groupBox_2">
+          <property name="maximumSize">
+           <size>
+            <width>1000</width>
+            <height>350</height>
+           </size>
+          </property>
           <property name="title">
            <string/>
           </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+          </property>
           <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0">
            <property name="leftMargin">
-            <number>11</number>
+            <number>0</number>
            </property>
            <property name="topMargin">
-            <number>30</number>
+            <number>10</number>
            </property>
            <property name="rightMargin">
             <number>11</number>
@@ -130,7 +136,7 @@
             <number>0</number>
            </property>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,6,1,1,2">
+            <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,6,1,1,2">
              <property name="spacing">
               <number>0</number>
              </property>
@@ -220,12 +226,12 @@
             </layout>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="2,8,2">
+            <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,8,2">
              <property name="spacing">
               <number>0</number>
              </property>
              <property name="bottomMargin">
-              <number>10</number>
+              <number>0</number>
              </property>
              <item>
               <spacer name="horizontalSpacer_2">
@@ -257,123 +263,136 @@
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QLabel" name="label_2">
-                   <property name="baseSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
+                  <layout class="QVBoxLayout" name="verticalLayout">
+                   <property name="spacing">
+                    <number>10</number>
                    </property>
-                   <property name="styleSheet">
-                    <string notr="true">*{
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetMinimumSize</enum>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_2">
+                     <property name="baseSize">
+                      <size>
+                       <width>0</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">*{
 	font-weight: bold;
 }</string>
-                   </property>
-                   <property name="text">
-                    <string>搜索内容</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="9,1">
-                   <property name="spacing">
-                    <number>0</number>
-                   </property>
+                     </property>
+                     <property name="text">
+                      <string>搜索内容</string>
+                     </property>
+                    </widget>
+                   </item>
                    <item>
-                    <widget class="QLineEdit" name="searchtext1">
-                     <property name="styleSheet">
-                      <string notr="true">*{
+                    <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="9,1">
+                     <property name="spacing">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QLineEdit" name="searchtext1">
+                       <property name="styleSheet">
+                        <string notr="true">*{
 	font-size:25px;
 }</string>
-                     </property>
-                     <property name="placeholderText">
-                      <string>请输入...</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="searchButton">
-                     <property name="cursor">
-                      <cursorShape>PointingHandCursor</cursorShape>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">background-image: url(:/icon/search2.png);
+                       </property>
+                       <property name="placeholderText">
+                        <string>请输入...</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="searchButton">
+                       <property name="cursor">
+                        <cursorShape>PointingHandCursor</cursorShape>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">background-image: url(:/icon/search2.png);
 	background-repeat:no-repeat;
 	background-position:center;   </string>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="type" stdset="0">
-                      <string>2</string>
-                     </property>
-                    </widget>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="type" stdset="0">
+                        <string>2</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,25">
-                   <property name="spacing">
-                    <number>0</number>
-                   </property>
                    <item>
-                    <widget class="QLabel" name="label_i1">
-                     <property name="styleSheet">
-                      <string notr="true">*{
+                    <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,25">
+                     <property name="spacing">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="label_i1">
+                       <property name="styleSheet">
+                        <string notr="true">*{
 	background-image:url(:/icon/i.png);
 	background-position:center;
 	background-repeat:no-repeat;
 }</string>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="label_pt">
-                     <property name="styleSheet">
-                      <string notr="true">*{
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_pt">
+                       <property name="styleSheet">
+                        <string notr="true">*{
 	color:rgb(118, 118, 118)
 }</string>
-                     </property>
-                     <property name="text">
-                      <string>普通搜索：根据病案号或姓名来搜索</string>
-                     </property>
-                    </widget>
+                       </property>
+                       <property name="text">
+                        <string>普通搜索：根据病案号或姓名来搜索</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,30">
-                   <property name="spacing">
-                    <number>0</number>
-                   </property>
                    <item>
-                    <widget class="QLabel" name="label_i1_2">
-                     <property name="styleSheet">
-                      <string notr="true">*{
+                    <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,30">
+                     <property name="spacing">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="label_i1_2">
+                       <property name="styleSheet">
+                        <string notr="true">*{
 	background-image:url(:/icon/i.png);
 	background-position:center;
 	background-repeat:no-repeat;
 }</string>
-                     </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="label_pt_2">
-                     <property name="styleSheet">
-                      <string notr="true">*{
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_pt_2">
+                       <property name="styleSheet">
+                        <string notr="true">*{
 	color:rgb(118, 118, 118)
 }</string>
-                     </property>
-                     <property name="text">
-                      <string>高级搜索：根据某个字段来搜索</string>
-                     </property>
-                    </widget>
+                       </property>
+                       <property name="text">
+                        <string>高级搜索：根据某个字段来搜索</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                   </layout>
                  </item>
@@ -382,10 +401,13 @@
                    <property name="orientation">
                     <enum>Qt::Vertical</enum>
                    </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Maximum</enum>
+                   </property>
                    <property name="sizeHint" stdset="0">
                     <size>
                      <width>20</width>
-                     <height>143</height>
+                     <height>100</height>
                     </size>
                    </property>
                   </spacer>
@@ -752,6 +774,9 @@
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::MinimumExpanding</enum>
+               </property>
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>158</width>
@@ -772,7 +797,7 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0">
            <property name="spacing">
-            <number>7</number>
+            <number>0</number>
            </property>
            <property name="leftMargin">
             <number>11</number>
@@ -866,6 +891,12 @@
              <property name="enabled">
               <bool>true</bool>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>200</height>
+              </size>
+             </property>
              <property name="defaultDropAction">
               <enum>Qt::IgnoreAction</enum>
              </property>
@@ -936,7 +967,7 @@
           <item>
            <widget class="QPushButton" name="getpathbutton">
             <property name="text">
-             <string>请选择病历所在的文件夹</string>
+             <string>请选择病历文件</string>
             </property>
             <property name="checkable">
              <bool>true</bool>

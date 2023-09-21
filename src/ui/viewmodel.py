@@ -66,7 +66,7 @@ def catch_error(func):
 
 
 def log(func: Callable):
-    @wraps(func)
+    # @wraps(func)
     def wrapper(*args, **kwargs):
         args_repr = [repr(a) for a in args]
         kwargs_repr = [f"{k}={v!r}" for k, v in kwargs.items()]
@@ -76,7 +76,7 @@ def log(func: Callable):
     return wrapper
 
 
-def with_loading_and_error(func):
+def with_loading_and_catching_error(func):
     """
     装饰器，同时装饰`with_loading_state`和`catch_error`
     """
@@ -89,7 +89,7 @@ def with_loading_and_error(func):
 class ViewModel:
     @inject  # 使用inject给构造函数注入其他模块
     def __init__(self, crud_patient: CRUDPatient, recognizer: Recognizer):
-        # BehaviorSubject是一个流，该流只保留最新一次的数据，
+        # BehaviorSubject是一个流，该流只能容纳一个值且只保留最新一次的数据，
         # 所以必须要有一个初始值。
         # 流需要被其他订阅者订阅。当调用`BehaviorSubject.on_next()`方法时，
         # 所有订阅者都会被通知，即调用一次他们订阅的函数
@@ -117,7 +117,7 @@ class ViewModel:
         )
     
     @asyncSlot()
-    @with_loading_and_error
+    @with_loading_and_catching_error
     @log
     async def common_search(self, text: str):
         if not text:
@@ -130,7 +130,7 @@ class ViewModel:
         self._update(table_data=patients)
 
     @asyncSlot()
-    @with_loading_and_error
+    @with_loading_and_catching_error
     @log
     async def advanced_search(self, query: str, field: str):
         if not query:
@@ -145,7 +145,7 @@ class ViewModel:
         self._update(table_data=patients.data)
     
     @asyncSlot()
-    @with_loading_and_error
+    @with_loading_and_catching_error
     @log
     async def update_field(self, id: int, field: str, value: Any):
         """
@@ -164,27 +164,22 @@ class ViewModel:
     
     
     @asyncSlot()
-    @with_loading_and_error
+    @with_loading_and_catching_error
     @log
     async def upload_file(self, path: str):
-        await asyncio.to_thread(self.recognizer.read_files2, path)  # 把一个非异步函数放到一个线程去执行
-        res = self.recognizer.read_files2(path)
-        patients = []
-        for i in res:
-            i["身份证号"] = ""
+        res = await asyncio.to_thread(self.recognizer.read_files2, path)  # 把一个非异步函数放到一个线程去执行
+        
+        res["身份证号"] = ""
 
-            trans = {settings.COLUMNS_NAME_MAP[k]: v for k, v in i.items()}
-            patients.append(trans)
+        trans = {settings.COLUMNS_NAME_MAP[k]: v for k, v in res.items()}
 
 
-        await self.crud_patient.create_patients(*[
-            PatientCreate(**_) for _ in patients
-        ])
+        await self.crud_patient.create_patients(PatientCreate(**trans))
         
         self._update(upload_success=True)
         
     @asyncSlot()
-    @with_loading_and_error
+    @with_loading_and_catching_error
     @log
     async def delete_patients(self, *id: int):
         await self.crud_patient.delete_patients(*id)
@@ -198,7 +193,7 @@ class ViewModel:
 
 
     @asyncSlot()
-    @with_loading_and_error
+    @with_loading_and_catching_error
     @log
     async def export_to_excel(self, path: str, *ids: int):
         selected = filter(
