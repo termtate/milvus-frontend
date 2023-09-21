@@ -21,7 +21,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QGroupBox,
     QSizePolicy, QSpacerItem, QStackedWidget, QStatusBar,
     QTabWidget, QTableWidget, QTableWidgetItem, QVBoxLayout,
     QWidget)
-import assets.qrc1_rc
+import qrc1_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
