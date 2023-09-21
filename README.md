@@ -6,7 +6,7 @@
 2. 运行milvus
 3. 控制台输入 `rye sync`
 4. 下载[PaddleOCR-json程序](https://github.com/hiroi-sora/PaddleOCR-json/releases/tag/v1.3.0)并解压到当前目录
-5. 从 https://www.sbert.net/docs/pretrained_models.html 下载合适的机器学习模型（项目默认使用的模型为 https://huggingface.co/sentence-transformers/distiluse-base-multilingual-cased-v2 ）（**需要代理上网**），把模型文件夹粘贴到./model文件夹内，然后修改src/common/config.py中MilvusSettings的`MODEL_NAME_OR_PATH`属性为模型文件夹路径
+5. 从 https://www.sbert.net/docs/pretrained_models.html 下载合适的机器学习模型（项目默认使用的模型为 https://huggingface.co/sentence-transformers/distiluse-base-multilingual-cased-v2 ）（**需要代理上网**），把模型文件夹粘贴到./model文件夹内，然后修改src/common/config.py中MilvusSettings的`MODEL_NAME_OR_PATH`属性为模型文件夹路径（如果下载的是默认模型的话就不用动）
 
 ## 运行
 `rye run main`
@@ -29,7 +29,7 @@
 - `ui` ui层，提供gui界面，处理用户输入
 - `ml` 机器学习相关模块，负责将导入的病历解析为数据库表中数据
 - `db` milvus模块的业务封装，负责表的定义、分表、提供增删改查接口工作。
-- `ppocr` 负责图片转文字(ocr)功能
+- `ppocr` 负责图片转文字(ocr)功能(https://github.com/hiroi-sora/PaddleOCR-json)
 - `milvus` `pymilvus`库的封装，负责简化milvus数据库的连接和增删改查、自动生成向量字段等功能
 - `common` 包含全局设置、数据格式的定义
   
@@ -43,5 +43,5 @@
 - `rye add numpy` 增加numpy包依赖（此时项目中还没有下载numpy，只是添加到了依赖项列表里）
 - `rye remove numpy` 删除numpy包依赖（同上）
 - `rye sync` 下载所需的Python版本和所有依赖项，只有经过这一步以后项目才能正常运行
-- `rye run main` 运行事先设置好的`main`命令，在pyproject.toml里的[tool.rye.scripts]栏目下可以看到全部的脚本命令  
+- `rye run main` 运行事先设置好的`main`命令，在pyproject.toml里的`[tool.rye.scripts]`栏目下可以看到全部的脚本命令  
 关于更详细的使用说明，请参看rye文档
