@@ -4,7 +4,7 @@ from db.models.table import Table
 
 
 patients2 = Table(
-    table_name="test2",
+    table_name="patients2",
     fields=[
         FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=False),
         FieldSchema(name="feeding_difficulties", dtype=DataType.VARCHAR, max_length=1000),
