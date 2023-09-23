@@ -1,6 +1,6 @@
 import asyncio
 from functools import wraps
-from typing import Any, Callable, Sequence
+from typing import Any, Sequence
 from typing_extensions import Unpack, TypedDict
 import pandas as pd
 from pydantic import BaseModel
@@ -13,6 +13,8 @@ from db.crud import CRUDPatient
 from common.config import settings
 from httpx._exceptions import HTTPError
 import logging
+
+from common.log import log
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -62,17 +64,6 @@ def catch_error(func):
             logger.exception(f"Exception raised in {func.__name__}. exception: {str(e)}")
             self._update(error_message=str(e), is_loading=False)
     
-    return wrapper
-
-
-def log(func: Callable):
-    # @wraps(func)
-    def wrapper(*args, **kwargs):
-        args_repr = [repr(a) for a in args]
-        kwargs_repr = [f"{k}={v!r}" for k, v in kwargs.items()]
-        signature = ", ".join(args_repr + kwargs_repr)
-        logger.debug(f"function {func.__name__} called with args {signature}")
-        return func(*args, **kwargs)
     return wrapper
 
 
@@ -217,3 +208,4 @@ class ViewModel:
     async def close(self, event):
         await self.crud_patient.disconnect()
     
+
