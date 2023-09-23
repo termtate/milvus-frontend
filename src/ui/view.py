@@ -11,6 +11,7 @@ from ui.viewmodel import State, ViewModel
 from assets.main_ui import Ui_MainWindow
 
 
+# TODO 分组件处理，可以自定义组件，或者分成几个函数
 class TestWin(QMainWindow):
     @inject
     def __init__(self, viewmodel: ViewModel):
