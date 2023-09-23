@@ -13,9 +13,13 @@ logger = logging.getLogger(__name__)
 def init_if_need(conn: MilvusConnection):
     if not utility.has_collection(patients.table_name) or not utility.has_collection(patients2.table_name):
         logger.info("init collections")
-        check_vector_fields()
+        check_collection_info()
         init_db(conn)
 
+
+def check_collection_info():
+    check_vector_fields()
+    # TODO 检查collection是否有变化，如果有变化就drop，init
 
 def check_vector_fields():
     db_vector_fields = sorted(patients.vector_fields + patients2.vector_fields)
