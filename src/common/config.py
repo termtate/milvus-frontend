@@ -18,6 +18,7 @@ class MilvusSettings(BaseSettings):
 class Settings(BaseSettings):
     milvus: MilvusSettings = MilvusSettings()
     
+    # qt-material主题设置
     THEME_EXTRA: dict[str, str] = {
         # Button colors
         'danger': '#dc3545',
@@ -31,7 +32,8 @@ class Settings(BaseSettings):
         'button_shape': 'default',
     }
     
-    ANN_SEARCH_FIELDS: tuple[str, ...] = ("发作演变过程", "诱发因素", "情绪或情感")
+    ANN_SEARCH_FIELDS: tuple[str, ...] = ("发作演变过程", "诱发因素", "情绪或情感")  # 如果要改动的话 需要同时修改db/model里的向量字段
+    # 中英转换
     COLUMNS_NAME_MAP: dict[str, str] = {
         "ID": "id",
         "身份证号": "id_card_number",
