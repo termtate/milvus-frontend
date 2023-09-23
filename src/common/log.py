@@ -1,5 +1,8 @@
-from ui.viewmodel import logger
+import logging
 
+# logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 from typing import Callable
 

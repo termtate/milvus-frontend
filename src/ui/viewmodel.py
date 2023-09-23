@@ -18,7 +18,7 @@ from common.log import log
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+# logger.setLevel(logging.DEBUG)
 
 
 class State(BaseModel):
