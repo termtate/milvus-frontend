@@ -13,8 +13,16 @@ logger = logging.getLogger(__name__)
 def init_if_need(conn: MilvusConnection):
     if not utility.has_collection(patients.table_name) or not utility.has_collection(patients2.table_name):
         logger.info("init collections")
+        check_vector_fields()
         init_db(conn)
-        
+
+
+def check_vector_fields():
+    db_vector_fields = sorted(patients.vector_fields + patients2.vector_fields)
+    settings_vector_fields = sorted(settings.COLUMNS_NAME_MAP[_] for _ in settings.ANN_SEARCH_FIELDS)
+    assert db_vector_fields == settings_vector_fields,\
+        "common/config.py$Settings内的ANN_SEARCH_FIELDS字段必须与db/model内表定义的向量字段一致，" \
+            f"{db_vector_fields=}, {settings_vector_fields=}"
 
 def init_db(conn: MilvusConnection) -> None:
     create_collection(conn)
